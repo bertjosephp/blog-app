@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "canvas": "^2.11.2",
+    "canvasjs": "^1.8.3",
+    "express": "^4.19.2",
+    "express-handlebars": "^7.1.2",
+    "express-session": "^1.18.0",
+    "handlebars": "^4.7.8"
+  }
+}
