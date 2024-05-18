@@ -10,12 +10,14 @@
         {{/if}}
         <form action="/login" method="POST">
             <!-- the login form goes here -->        
-            <label for="login-name">Username</label> <input type="text" id="login-name">
+            <label for="login-name">Username</label>
+            <input type="text" id="login-name" name="username">
             <button type="submit">Login</button>
         </form>
     </section>
 
     <!-- say --OR-- ... with style -->
+    <span>--OR--</span>
 
     <section class = "register-area">
         <h2>Register</h2>
@@ -25,7 +27,8 @@
         {{/if}}
         <form action="/register" method="POST">
             <!-- the registration form goes here -->
-            <label for="register-name">Username</label> <input type="text" id="register-name">
+            <label for="register-name">Username</label>
+            <input type="text" id="register-name" name="username">
             <button type="submit">Register</button>
         </form>
     </section>
