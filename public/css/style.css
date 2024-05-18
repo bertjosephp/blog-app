@@ -70,6 +70,18 @@ header nav ul li a {
 
 /* Body */
 
+.content-container {
+    width: 100%;
+    height: 100%;
+    margin: 40px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+/* * Login/Register * */
+
 .login-register {
     width: 100%;
     height: 100%;
@@ -123,8 +135,63 @@ header nav ul li a {
     border-radius: 8px;
 } 
 
-span {
+.login-register span {
     font-size: 24px;
+}
+
+/* * Post * */
+
+.posts-list {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.posts-list h2 {
+    margin-bottom: 40px;
+    padding: 0 20px 8px 20px;
+    border-bottom: 1px solid gray;
+    font-size: 32px;
+    text-align: center;
+}
+
+.posts-list ul {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+}
+
+.post {
+    width: 60%;
+    padding: 24px;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 2px 2px 1px 1px gray;
+}
+
+.post .post-content h3 {
+    padding-bottom: 12px;
+}
+
+.post .post-content .post-status-bar {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid gray;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post .post-content .post-status-bar .like-container {
+    display: flex;
+    gap: 20px;
 }
 
 
@@ -141,7 +208,7 @@ footer {
 }
 
 
-/* Media Quries */
+/* Media Queries */
 
 @media screen and (max-width: 1200px) {
     .login-register {

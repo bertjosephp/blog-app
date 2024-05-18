@@ -9,6 +9,11 @@
         <p>{{this.content}}</p>
         <div class="post-status-bar">
             <!-- everything that is shown in the status bar -->
+            <div class="like-container">
+                <button class="like-button">♥</button>
+                <span class="like-count">{{this.likes}} Likes</span>
+            </div>
+            <span class="post-info">Posted by {{this.username}} on {{this.timestamp}}</span>
             <!-- Heart = ♥ -->
             <!-- font awesome  trashcan = <i class="fas fa-trash-alt"> </i>-->
         </div>        
