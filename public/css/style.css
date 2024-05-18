@@ -56,6 +56,7 @@ header nav {
 header nav ul {
     display: flex;
     flex-direction: row;
+    align-items: center;
     gap: 20px;
 }
 
@@ -68,7 +69,20 @@ header nav ul li a {
     color: black;
 }
 
+header nav ul .user-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header nav ul .user-info .header-avatar-img {
+    border-radius: 10px;
+    max-height: 40px;
+} 
+
 /* Body */
+
+/* * Login/Register * */
 
 .content-container {
     width: 100%;
@@ -79,8 +93,6 @@ header nav ul li a {
     justify-content: flex-start;
     align-items: center;
 }
-
-/* * Login/Register * */
 
 .login-register {
     width: 100%;
@@ -168,15 +180,33 @@ header nav ul li a {
 
 .post {
     width: 60%;
-    padding: 24px;
-    border: 1px solid black;
+    padding: 20px;
+    border: 1px solid gray;
     border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
     background-color: white;
-    box-shadow: 2px 2px 1px 1px gray;
+    box-shadow: 1px 1px 1px 1px gray;
 }
 
-.post .post-content h3 {
+.post .post-avatar .post-avatar-img {
+    border-radius: 10px;
+    max-height: 80px;
+}
+
+.post .post-content {
+    flex: 1;
+}
+
+.post .post-content > h3 {
     padding-bottom: 12px;
+    font-size: 24px;
+}
+
+.post .post-content > p {
+    font-size: 18px;
 }
 
 .post .post-content .post-status-bar {
@@ -187,13 +217,74 @@ header nav ul li a {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    color: gray;
 }
 
 .post .post-content .post-status-bar .like-container {
     display: flex;
-    gap: 20px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 40px;
 }
 
+/* * Profile * */
+
+.profile-container {
+    max-width: 40%;
+    height: 100%;
+    margin: 40px auto;
+    padding: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 1px 1px 1px 1px gray;
+}
+
+
+.profile-container .profile-avatar .profile-avatar-img {
+    border-radius: 10px;
+    height: 160px;
+}
+
+.profile-container .profile-info h2 {
+    font-size: 32px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid gray;
+} 
+
+.profile-container .profile-info p {
+    font-size: 20px;
+} 
+
+.user-posts {
+    margin: 20px 0 40px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-posts h2 {
+    margin-bottom: 40px;
+    padding: 0 20px 8px 20px;
+    font-size: 32px;
+    border-bottom: 1px solid gray;
+}
+
+.user-posts ul {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+}
 
 /* Footer */
 

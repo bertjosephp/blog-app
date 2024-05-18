@@ -2,6 +2,13 @@
 <div class="post">
     <div class="post-avatar">
         <!-- the user's avatar -->
+        <img src="{{#if this.avatar_url}}
+                        {{this.avatar_url}}
+                    {{else}}
+                        /avatar/{{this.username}}.png
+                    {{/if}}" 
+                    alt="User Avatar" 
+                    class="post-avatar-img">
     </div>
     <div class="post-content preserve-newlines">
         <!-- the post -->
