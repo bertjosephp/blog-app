@@ -8,6 +8,8 @@
     
     <section class="profile-info">
         <!-- user profile info -->
+        <h2>{{user.username}}</h2>
+        <p>{{user.memberSince}}</p>
     </section>
 </div>
 
@@ -15,15 +17,15 @@
     <!-- you can call posts tweets, or truths, or whatever, these are neologisms. Choose your own new in server.js -->
     <h2>Your {{{postNeoType}}}s</h2>
     
-    <!-- you'll need to make this conditaionl and #each expression work -->
-    {{#if user.posts.length}}
+    <!-- you'll need to make this conditional and #each expression work -->
+    {{#if posts.length}}
         <ul>
-            {{#each user.posts}}
+            {{#each posts}}
                 {{> post this}}
             {{/each}}
         </ul>
     {{else}}
         <!-- fix this up with some helper functions and other handlebars expressions, or add you own character -->
-        <p>You have not posted yet, poster.</p>
+        <p>You have not posted yet, {{user.username}}.</p>
     {{/if}}
 </section>

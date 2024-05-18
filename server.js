@@ -133,6 +133,7 @@ app.post('/like/:id', (req, res) => {
 });
 app.get('/profile', isAuthenticated, (req, res) => {
     // TODO: Render profile page
+    renderProfile(req, res);
 });
 app.get('/avatar/:username', (req, res) => {
     // TODO: Serve the avatar image for the user
@@ -257,6 +258,12 @@ function logoutUser(req, res) {
 // Function to render the profile page
 function renderProfile(req, res) {
     // TODO: Fetch user posts and render the profile page
+    const user = getCurrentUser(req);
+    const userPosts = posts.filter(post => post.username === user.username);
+    res.render('profile', {
+        posts: userPosts,
+        user: user
+    });
 }
 
 // Function to update post likes
