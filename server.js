@@ -139,12 +139,15 @@ app.get('/avatar/:username', (req, res) => {
 });
 app.post('/register', (req, res) => {
     // TODO: Register a new user
+    registerUser(req, res);
 });
 app.post('/login', (req, res) => {
     // TODO: Login a user
+    loginUser(req, res);
 });
 app.get('/logout', (req, res) => {
     // TODO: Logout the user
+    logoutUser(req, res);
 });
 app.post('/delete/:id', isAuthenticated, (req, res) => {
     // TODO: Delete a post if the current user is the owner
@@ -175,16 +178,25 @@ let users = [
 // Function to find a user by username
 function findUserByUsername(username) {
     // TODO: Return user object if found, otherwise return undefined
+    return users.find(user => user.username === username);
 }
 
 // Function to find a user by user ID
 function findUserById(userId) {
     // TODO: Return user object if found, otherwise return undefined
+    return users.find(user => user.id === userId);
 }
 
 // Function to add a new user
 function addUser(username) {
     // TODO: Create a new user object and add to users array
+    const user = {
+        id: generateUserId(),
+        username: username,
+        avatar_url: undefined,
+        memberSince: getDate()
+    };
+    users.push(user);
 }
 
 // Middleware to check if user is authenticated
@@ -200,16 +212,46 @@ function isAuthenticated(req, res, next) {
 // Function to register a user
 function registerUser(req, res) {
     // TODO: Register a new user and redirect appropriately
+    const username = req.body.username;
+    console.log("Attempting to register:", username);
+    if (findUserByUsername(username)) {
+        // Username already exists
+        res.redirect('register?error=Username+already+exists');
+    } else {
+        // Add the new user
+        addUser(username);
+        res.redirect('/login');
+    }
 }
 
 // Function to login a user
 function loginUser(req, res) {
     // TODO: Login a user and redirect appropriately
+    const username = req.body.username;
+    const user = findUserByUsername(username);
+    console.log("Attempting to log in:", username);
+    if (user) {
+        // Successful login
+        req.session.userId = user.id;
+        req.session.loggedIn = true;
+        res.redirect('/');
+    } else {
+        // Invalid username
+        res.redirect('login?error=Invalid+username');
+    }
 }
 
 // Function to logout a user
 function logoutUser(req, res) {
     // TODO: Destroy session and redirect appropriately
+    req.session.destroy(err => {
+        if (err) {
+            console.error('Error destroying session:', err);
+            res.redirect('/error');
+        } else {
+            res.redirect('/');
+        }
+    });
 }
 
 // Function to render the profile page
@@ -230,6 +272,8 @@ function handleAvatar(req, res) {
 // Function to get the current user from session
 function getCurrentUser(req) {
     // TODO: Return the user object if the session user ID matches
+    const user = findUserById(req.session.userId);
+    return user;
 }
 
 // Function to get all posts, sorted by latest first
@@ -240,6 +284,15 @@ function getPosts() {
 // Function to add a new post
 function addPost(title, content, user) {
     // TODO: Create a new post object and add to posts array
+    const post = {
+        id: generatePostId(),
+        title: title,
+        content: content,
+        username: user.username,
+        timestamp: getDate(),
+        likes: 0
+    };
+    posts.push(post);
 }
 
 // Function to generate an image avatar
@@ -251,4 +304,33 @@ function generateAvatar(letter, width = 100, height = 100) {
     // 3. Draw the background color
     // 4. Draw the letter in the center
     // 5. Return the avatar as a PNG buffer
+}
+
+// Function to generate a random user id
+function generateUserId() {
+    let id = Math.floor(Math.random() * Date.now()).toString(16);
+    while (findUserById(id) !== undefined) {
+        id = Math.floor(Math.random() * Date.now()).toString(16);
+    }
+    return id;
+}
+
+// Function to generate a random post id
+function generatePostId() {
+    let id = Math.floor(Math.random() * Date.now()).toString(16);
+    while (findPostById(id) !== undefined) {
+        id = Math.floor(Math.random() * Date.now()).toString(16);
+    }
+    return id;
+}
+
+// Function to get current date as string
+function getDate() {
+    let currentDate = new Date(Date.now());
+    return currentDate.toISOString().replace('T', ' ').substring(0, 16);
+}
+
+// Function to find a post by post id
+function findPostById(postId) {
+    return posts.find(post => post.id === postId);
 }
