@@ -139,13 +139,7 @@ app.get('/profile', isAuthenticated, (req, res) => {
 });
 app.get('/avatar/:username', (req, res) => {
     // TODO: Serve the avatar image for the user
-    const user = findUserByUsername(req.params.username);
-    if (user && user.avatar_url) {
-        res.sendFile(path.join(__dirname, 'public', user.avatar_url));
-    } else {
-        console.error('Error serving avatar image:', err);
-        res.redirect('/error');
-    }
+    handleAvatar(req, res);
 });
 app.post('/register', (req, res) => {
     // TODO: Register a new user
@@ -182,6 +176,7 @@ let posts = [
     { id: 3, title: 'Sample Post', content: 'This is a second sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0 },
     { id: 4, title: 'Sample Post', content: 'This is a third sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0 },
     { id: 5, title: 'Sample Post', content: 'This is a fourth sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0 },
+    { id: 5, title: 'Another Post', content: 'This is another very very very very very very very very very very very very very very very very very very very very very very very very very long sample post.', username: 'AnotherUser', timestamp: '2024-01-01 10:00', likes: 0 },
 ];
 let users = [
     { id: 1, username: 'SampleUser', avatar_url: `avatar/SampleUser.png`, memberSince: '2024-01-01 08:00' },
@@ -286,6 +281,13 @@ function updatePostLikes(req, res) {
 // Function to handle avatar generation and serving
 function handleAvatar(req, res) {
     // TODO: Generate and serve the user's avatar image
+    const user = findUserByUsername(req.params.username);
+    if (user && user.avatar_url) {
+        res.sendFile(path.join(__dirname, 'public', user.avatar_url));
+    } else {
+        console.error('Error serving avatar image:', err);
+        res.redirect('/error');
+    }
 }
 
 // Function to get the current user from session
@@ -317,24 +319,27 @@ function addPost(title, content, user) {
 // Function to generate an image avatar
 function generateAvatar(letter, width = 100, height = 100) {
     // TODO: Generate an avatar image with a letter
-    // Steps:
-    // 1. Choose a color scheme based on the letter
-    // Color scheme from: https://coolors.co/palette/f94144-f3722c-f8961e-f9844a-f9c74f-90be6d-43aa8b-4d908e-577590-277da1
+
+    // 1. Choose a color scheme based on the letter [https://coolors.co/palette/f94144-f3722c-f8961e-f9844a-f9c74f-90be6d-43aa8b-4d908e-577590-277da1]
     const colors = ['#f94144', '#F3722C', '#F8961E', '#F9844A', '#F9C74F', '#90BE6D', '#43AA8B', '#4D908E', '#577590', '#277DA1'];
     const idx = letter.toUpperCase().charCodeAt(0) % colors.length;
     const backgroundColor = colors[idx];
+
     // 2. Create a canvas with the specified width and height
     const avatarCanvas = canvas.createCanvas(width, height);
     const context = avatarCanvas.getContext('2d');
+
     // 3. Draw the background color
     context.fillStyle = backgroundColor;
     context.fillRect(0, 0, width, height);
+
     // 4. Draw the letter in the center
     context.fillStyle = '#ffffff';
     context.font = 'bold 48px Arial';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.fillText(letter.toUpperCase(), width / 2, height / 2);
+    
     // 5. Return the avatar as a PNG buffer
     return avatarCanvas.toBuffer('image/png');
 }
