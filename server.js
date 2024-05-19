@@ -129,6 +129,7 @@ app.get('/post/:id', (req, res) => {
 });
 app.post('/posts', (req, res) => {
     // TODO: Add a new post and redirect to home
+    submitPost(req, res);
 });
 app.post('/like/:id', (req, res) => {
     // TODO: Update post likes
@@ -267,10 +268,7 @@ function renderProfile(req, res) {
     // TODO: Fetch user posts and render the profile page
     const user = getCurrentUser(req);
     const userPosts = posts.filter(post => post.username === user.username);
-    res.render('profile', {
-        posts: userPosts,
-        user: user
-    });
+    res.render('profile', { posts: userPosts, user: user });
 }
 
 // Function to update post likes
@@ -378,4 +376,11 @@ function saveAvatar(buffer, username) {
     const avatarPath = path.join(__dirname, 'public', 'avatar', `${username}.png`);
     fs.writeFileSync(avatarPath, buffer);
     return `/avatar/${username}.png`;
+}
+
+// Function to add a new post and redirect to home
+function submitPost(req, res) {
+    const user = getCurrentUser(req);
+    const post = addPost(req.body.title, req.body.content, user)
+    res.redirect('/');
 }
