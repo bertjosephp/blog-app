@@ -7,6 +7,8 @@
         <!-- errors will appear here -->
         {{#if loginError}}
             <p style="color: red;">{{loginError}}</p>
+        {{else}}
+            <p> </p>
         {{/if}}
         <form action="/login" method="POST">
             <!-- the login form goes here -->        
@@ -24,6 +26,8 @@
         <!-- errors will appear here -->
         {{#if regError}}
             <p style="color: red;">{{regError}}</p>
+        {{else}}
+            <p> </p>
         {{/if}}
         <form action="/register" method="POST">
             <!-- the registration form goes here -->
