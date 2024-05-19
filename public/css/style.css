@@ -92,6 +92,7 @@ header nav ul .user-info .header-avatar-img {
     height: 100%;
     margin: 40px 0;
     display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: flex-start;
     gap: 20px;
@@ -168,8 +169,8 @@ header nav ul .user-info .header-avatar-img {
 /* * Post * */
 
 .post-form {
-    /* width: 100%; */
-    flex-grow: 5;
+    flex-grow: 1;
+    flex-basis: 40%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -218,7 +219,7 @@ header nav ul .user-info .header-avatar-img {
 }
 
 .post-form form .form-actions {
-    width: 95%;
+    align-self: center;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -251,8 +252,8 @@ header nav ul .user-info .header-avatar-img {
 }
 
 .posts-list {
-    /* width: 70%; */
-    flex-grow: 3;
+    flex-grow: 2;
+    flex-basis: 60%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -401,6 +402,29 @@ footer {
 
 /* Media Queries */
 
+@media screen and (max-width: 1240px) {
+    .content-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .post-form {
+        margin-bottom: 40px;
+    }
+
+    .profile-container {
+        max-width: 95%;
+        /* flex-direction: column;
+        align-items: center; */
+    }
+
+    .profile-container .profile-info {
+        /* display: flex;
+        flex-direction: column;
+        align-items: center; */
+    }
+}
+
 @media screen and (max-width: 1200px) {
     .login-register {
         flex-direction: column;
@@ -411,5 +435,44 @@ footer {
         min-width: 400px;
         padding: 40px;
         border-radius: 10px;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .post {
+        min-width: 360px;
+        gap: 12px;
+    }
+
+    .post .post-content .post-status-bar {
+        text-align: center;
+        gap: 20px;
+    }
+    
+    .post .post-content .post-status-bar .like-container {
+        gap: 10px;
+    }
+}
+
+@media screen and (max-width: 580px) {
+    h1 {
+        font-size: 24px;
+    }
+
+    header nav ul {
+        gap: 8px;
+        text-align: center;
+        font-size: 16px;
+    }
+
+    .profile-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-container .profile-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 }
