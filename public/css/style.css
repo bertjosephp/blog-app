@@ -191,7 +191,7 @@ header nav ul .user-info .header-avatar-img {
     box-shadow: 1px 1px 1px 1px gray;
 }
 
-.post-form form label {
+.post-form label {
     font-size: 20px;
 }
 
@@ -207,7 +207,7 @@ header nav ul .user-info .header-avatar-img {
 
 .post-form form textarea {
     width: 95%;
-    min-height: 240px;
+    min-height: 120px;
     margin-bottom: 10px;
     padding: 12px;
     align-self: center;
@@ -248,6 +248,33 @@ header nav ul .user-info .header-avatar-img {
     padding: 0 20px 8px 20px;
     border-bottom: 1px solid gray;
     font-size: 32px;
+    text-align: center;
+}
+
+.post-form .emoji-panel {
+    width: 100%;
+    margin-top: 8px;
+    padding: 8px;
+    align-self: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid gray;
+    border-radius: 8px;
+}
+
+.post-form .emoji-panel input {
+    width: 80%;
+    margin-top: 8px;
+    margin-bottom: 10px;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid gray;
+    border-radius: 8px;
+}
+
+.post-form .emoji-panel #emoji-grid {
+    width: 90%;
     text-align: center;
 }
 
@@ -414,14 +441,10 @@ footer {
 
     .profile-container {
         max-width: 95%;
-        /* flex-direction: column;
-        align-items: center; */
     }
 
-    .profile-container .profile-info {
-        /* display: flex;
-        flex-direction: column;
-        align-items: center; */
+    div#emoji-container {
+        max-width: 480px;
     }
 }
 

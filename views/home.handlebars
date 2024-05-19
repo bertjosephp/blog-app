@@ -6,28 +6,25 @@
     {{#if loggedIn}}
         <!-- show the create post form when logged in -->
         <section class="post-form">
-            <!-- make a header here -->
             <h2>Create a New Post</h2>
             <form action="/posts" method="POST">
-                <!-- title input field name = "title" -->
                 <label for="title">Title</label>
                 <input type="text" id="title" name="title">
-                
-                <!-- text area input field name = "content" -->
                 <label for="content">Content</label>
                 <textarea name="content" id="content"></textarea>
-                {{!-- <input type="textarea" id="content" name="content"> --}}
+
+                <div id="emoji-container" class="emoji-panel" style="display: none;">
+                    <label for="emoji-search">Search Emoji</label>
+                    <input type="text" id="emoji-search" name="emoji-search" oninput="searchEmojis()">
+                    <div id="emoji-grid"></div>
+                </div>
 
                 <div class="form-actions">
                     <button type="button" class="emoji-button" onclick="toggleEmojiPanel()">😀</button>
                     <button type="submit" class="post-button">Post</button>
                 </div>
-            </form>
 
-            <div id="emoji-container" class="emoji-panel" style="display: none;">
-                <!-- input field for the emoji search, use oninput="searchEmojis() -->
-                <!-- a div, id = "emoji-grid" -->
-            </div>
+            </form>
         </section>
     {{/if}}
 
@@ -63,11 +60,12 @@ let allEmojis = [];  // Global list to hold all emojis
 
 function toggleEmojiPanel() {
     const container = document.getElementById('emoji-container');
-    container.style.display = container.style.display === 'none' ? 'block' : 'none';
+    container.style.display = container.style.display === 'none' ? 'flex' : 'none';
 
 
-    if(container.style.display === 'block' && allEmojis.length == 0){
+    if(container.style.display === 'flex' && allEmojis.length == 0){
         // go "Fetch" you some emojis and show them off with displayEmojies
+        retrieveAllEmojis();
     }
 }
 
@@ -80,6 +78,7 @@ function displayEmojis(emojis,limit=200) {
             emojiElement.textContent = emoji.character;
             emojiElement.title = emoji.slug;  // Showing the emoji name on hover
             emojiElement.style.cursor = 'pointer';
+            emojiElement.style.fontSize = '18px';
             emojiElement.onclick = () => insertEmoji(emoji.character);
             container.appendChild(emojiElement);
         });
@@ -93,17 +92,35 @@ function searchEmojis() {
     // array.filter takes a predicate
     // use string.includes. 
 
-    const filteredEmojis = allEmojis.filter(...);
-    
+    const filteredEmojis = allEmojis.filter(emoji => emoji.slug.includes(searchTerm));
+    console.log(filteredEmojis);
     displayEmojis(filteredEmojis);
 }
 
 function insertEmoji(emoji) {
-    // put an emoji on a form somehow. 
+    const textarea = document.getElementById('content');
+    const textBeforeCursor = textarea.value.substring(0, textarea.selectionStart);
+    const textAfterCursor  = textarea.value.substring(textarea.selectionEnd, textarea.value.length);
 
-    // do this when you're doing getting the emoji on the form
-    //
-    textarea.focus();  // Keep focus on the textarea
+    // insert emoji at cursor position, then move cursor
+    textarea.value = textBeforeCursor + emoji + textAfterCursor;
+    textarea.selectionStart = textarea.selectionStart + emoji.length;
+    textarea.selectionEnd = textarea.selectionStart + emoji.length;
+    textarea.focus();  // Bring focus back to the textarea
+}
+
+// Function to retrieve all emojis
+async function retrieveAllEmojis() {
+    const apiKey = '';  // insert emoji-api api key
+    const apiUrl = 'https://emoji-api.com/emojis?access_key=' + apiKey;
+    try {
+        const res = await fetch(apiUrl);
+        const data = await res.json();
+        allEmojis = data;
+        displayEmojis(allEmojis);
+    } catch (err) {
+        console.error('Error retrieving emojis:', err);
+    }
 }
 </script>
 
