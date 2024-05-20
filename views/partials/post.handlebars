@@ -16,19 +16,24 @@
         <p>{{this.content}}</p>
         <div class="post-status-bar">
             <!-- everything that is shown in the status bar -->
-            <div class="like-container">
+            <div class="post-button-container">
                 {{#if loggedIn}}
-                    <button class="like-button" data-id="{{this.id}}" onclick="handleLikeClick(event)"
-                            style="color: {{#if this.isLikedByUser}}white{{else}}gray{{/if}};
-                                    background-color: {{#if this.isLikedByUser}}red{{else}}white{{/if}};
-                                    border-color: {{#if this.isLikedByUser}}red{{else}}gray{{/if}}">
-                        ♥
-                    </button>
+                    {{#if isOwnedByUser}}
+                        {{!-- show delete button if post is owned by user --}}
+                        <button class="delete-button" data-id="{{this.id}}" onclick="handleDeleteClick(event)"><i class="fas fa-trash-alt"> </i></button>
+                    {{else}}
+                        {{!-- otherwise, show like button --}}
+                        <button class="like-button" data-id="{{this.id}}" onclick="handleLikeClick(event)"
+                                style="color: {{#if this.isLikedByUser}}white{{else}}gray{{/if}};
+                                        background-color: {{#if this.isLikedByUser}}red{{else}}white{{/if}};
+                                        border-color: {{#if this.isLikedByUser}}red{{else}}gray{{/if}}">
+                            ♥
+                        </button>
+                    {{/if}}
                 {{/if}}
                 <span class="like-count">{{this.likes}} Likes</span>
             </div>
             <span class="post-info">Posted by {{this.username}} on {{this.timestamp}}</span>
-            <!-- font awesome  trashcan = <i class="fas fa-trash-alt"> </i>-->
         </div>        
     </div>
 </div>
@@ -37,7 +42,6 @@
     function handleLikeClick(event) {
         const postId = event.target.getAttribute('data-id');
 
-        // you might want to "fetch" something...        
         fetch(`/like/${postId}`, {
             method: 'POST',
             headers: {
@@ -63,7 +67,19 @@
         const buttonElement = event.target.closest('.delete-button');
         const postId = buttonElement.getAttribute('data-id');        
 
-        // you might want to "fetch" something...        
+        fetch(`/delete/${postId}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            // delete post element in real time
+            const postElement = buttonElement.closest('.post');
+            postElement.remove();
+        })
+        .catch(err => console.error('Error: ', err));
         
     }
 </script>

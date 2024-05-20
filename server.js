@@ -101,7 +101,14 @@ app.get('/', (req, res) => {
     const posts = getPosts().map(post => {
         // check if post is liked by user
         const isLikedByUser = post.likedBy.has(req.session.userId);
-        return {...post, isLikedByUser}
+
+        const postOwner = findUserById(req.session.userId);
+        let isOwnedByUser = false;
+        if (postOwner) {
+            isOwnedByUser = post.username === postOwner.username;
+        }
+
+        return {...post, isLikedByUser, isOwnedByUser}
     });
     const user = getCurrentUser(req) || {};
     res.render('home', { posts, user });
@@ -158,6 +165,7 @@ app.get('/logout', (req, res) => {
 });
 app.post('/delete/:id', isAuthenticated, (req, res) => {
     // TODO: Delete a post if the current user is the owner
+    deletePost(req, res);
 });
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -417,4 +425,23 @@ function submitPost(req, res) {
     const user = getCurrentUser(req);
     const post = addPost(req.body.title, req.body.content, user)
     res.redirect('/');
+}
+
+// Function to delete a post
+function deletePost(req, res) {
+    const post = findPostById(req.params.id);
+    console.log(req.params.id);
+    
+    if (post) {
+        const postIdx = posts.findIndex(post => post.id == req.params.id);
+        posts.splice(postIdx, 1);
+        res.json({
+            success: true,
+        });
+    } else {
+        res.status(404).json({
+            success: false,
+            message: 'Post not found'
+        });
+    }
 }
