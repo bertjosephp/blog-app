@@ -130,6 +130,7 @@ app.post('/posts', (req, res) => {
 });
 app.post('/like/:id', (req, res) => {
     // TODO: Update post likes
+    updatePostLikes(req, res);
 });
 app.get('/profile', isAuthenticated, (req, res) => {
     // TODO: Render profile page
@@ -169,12 +170,12 @@ app.listen(PORT, () => {
 
 // Example data for posts and users
 let posts = [
-    { id: 1, title: 'Sample Post', content: 'This is a sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0 },
-    { id: 2, title: 'Another Post', content: 'This is another sample post.', username: 'AnotherUser', timestamp: '2024-01-02 12:00', likes: 0 },
-    { id: 3, title: 'Sample Post', content: 'This is a second sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0 },
-    { id: 4, title: 'Sample Post', content: 'This is a third sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0 },
-    { id: 5, title: 'Sample Post', content: 'This is a fourth sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0 },
-    { id: 5, title: 'Another Post', content: 'This is another very very very very very very very very very very very very very very very very very very very very very very very very very long sample post.', username: 'AnotherUser', timestamp: '2024-01-01 10:00', likes: 0 },
+    { id: 1, title: 'Sample Post', content: 'This is a sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0, likedBy: new Set() },
+    { id: 2, title: 'Another Post', content: 'This is another sample post.', username: 'AnotherUser', timestamp: '2024-01-02 12:00', likes: 0, likedBy: new Set() },
+    { id: 3, title: 'Sample Post', content: 'This is a second sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0, likedBy: new Set() },
+    { id: 4, title: 'Sample Post', content: 'This is a third sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0, likedBy: new Set() },
+    { id: 5, title: 'Sample Post', content: 'This is a fourth sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0, likedBy: new Set() },
+    { id: 6, title: 'Another Post', content: 'This is another very very very very very very very very very very very very very very very very very very very very very very very very very long sample post.', username: 'AnotherUser', timestamp: '2024-01-01 10:00', likes: 0, likedBy: new Set() },
 ];
 let users = [
     { id: 1, username: 'SampleUser', avatar_url: `avatar/SampleUser.png`, memberSince: '2024-01-01 08:00' },
@@ -271,6 +272,30 @@ function renderProfile(req, res) {
 // Function to update post likes
 function updatePostLikes(req, res) {
     // TODO: Increment post likes if conditions are met
+    const post = findPostById(Number(req.params.id));
+    if (post) {
+        let isLiked = true;
+        if (!post.likedBy.has(req.session.userId)) {
+            // like post
+            post.likes += 1;
+            post.likedBy.add(req.session.userId);
+        } else {
+            // unlike post
+            post.likes -= 1;
+            post.likedBy.delete(req.session.userId);
+            isLiked = false;
+        }
+        res.json({
+            success: true,
+            likes: post.likes,
+            isLiked: isLiked
+        })
+    } else {
+        res.status(404).json({
+            success: false,
+            message: 'Post not found'
+        });
+    }
 }
 
 // Function to handle avatar generation and serving
@@ -306,7 +331,8 @@ function addPost(title, content, user) {
         content: content,
         username: user.username,
         timestamp: getDate(),
-        likes: 0
+        likes: 0,
+        likedBy: new Set()
     };
     posts.push(post);
 }
