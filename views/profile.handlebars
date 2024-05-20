@@ -3,7 +3,6 @@
 
 <div class="profile-container">
     <div class="profile-avatar">
-        <!-- Correct path for the default avatar image -->
         <img src="{{#if user.avatar_url}}
                         {{user.avatar_url}}
                     {{else}}
@@ -22,10 +21,8 @@
 </div>
 
 <section class="user-posts">
-    <!-- you can call posts tweets, or truths, or whatever, these are neologisms. Choose your own new in server.js -->
     <h2>Your {{{postNeoType}}}s</h2>
     
-    <!-- you'll need to make this conditional and #each expression work -->
     {{#if posts.length}}
         <ul>
             {{#each posts}}

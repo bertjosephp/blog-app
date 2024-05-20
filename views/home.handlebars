@@ -35,7 +35,6 @@
         {{#if posts.length}}
         <ul>
             {{#each posts}}
-                <!-- you have to pass the user in to posts and this is the syntax -->
                 {{> post this user=../user loggedIn=../loggedIn}}            
             {{/each}}
         </ul>
@@ -64,7 +63,6 @@ function toggleEmojiPanel() {
 
 
     if(container.style.display === 'flex' && allEmojis.length == 0){
-        // go "Fetch" you some emojis and show them off with displayEmojies
         retrieveAllEmojis();
     }
 }
@@ -89,9 +87,6 @@ function displayEmojis(emojis,limit=200) {
 
 function searchEmojis() {
     const searchTerm = document.getElementById('emoji-search').value.toLowerCase();
-    // array.filter takes a predicate
-    // use string.includes. 
-
     const filteredEmojis = allEmojis.filter(emoji => emoji.slug.includes(searchTerm));
     console.log(filteredEmojis);
     displayEmojis(filteredEmojis);

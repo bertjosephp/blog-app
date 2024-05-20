@@ -129,31 +129,31 @@ app.get('/error', (req, res) => {
 
 
 app.post('/posts', (req, res) => {
-    // TODO: Add a new post and redirect to home
+    // Add a new post and redirect to home
     submitPost(req, res);
 });
 app.post('/like/:id', (req, res) => {
-    // TODO: Update post likes
+    // Update post likes
     updatePostLikes(req, res);
 });
 app.get('/profile', isAuthenticated, (req, res) => {
-    // TODO: Render profile page
+    // Render profile page
     renderProfile(req, res);
 });
 app.get('/avatar/:username', (req, res) => {
-    // TODO: Serve the avatar image for the user
+    // Serve the avatar image for the user
     handleAvatar(req, res);
 });
 app.post('/register', (req, res) => {
-    // TODO: Register a new user
+    // Register a new user
     registerUser(req, res);
 });
 app.post('/login', (req, res) => {
-    // TODO: Login a user
+    // Login a user
     loginUser(req, res);
 });
 app.get('/logout', (req, res) => {
-    // TODO: Logout the user
+    // Logout the user
     logoutUser(req, res);
 });
 app.post('/delete/:id', isAuthenticated, (req, res) => {
@@ -188,19 +188,19 @@ let users = [
 
 // Function to find a user by username
 function findUserByUsername(username) {
-    // TODO: Return user object if found, otherwise return undefined
+    // Return user object if found, otherwise return undefined
     return users.find(user => user.username === username);
 }
 
 // Function to find a user by user ID
 function findUserById(userId) {
-    // TODO: Return user object if found, otherwise return undefined
+    // Return user object if found, otherwise return undefined
     return users.find(user => user.id === userId);
 }
 
 // Function to add a new user
 function addUser(username) {
-    // TODO: Create a new user object and add to users array
+    // Create a new user object and add to users array
     const user = {
         id: generateUserId(),
         username: username,
@@ -222,7 +222,7 @@ function isAuthenticated(req, res, next) {
 
 // Function to register a user
 function registerUser(req, res) {
-    // TODO: Register a new user and redirect appropriately
+    // Register a new user and redirect appropriately
     const username = req.body.username;
     console.log("Attempting to register:", username);
     if (findUserByUsername(username)) {
@@ -237,7 +237,7 @@ function registerUser(req, res) {
 
 // Function to login a user
 function loginUser(req, res) {
-    // TODO: Login a user and redirect appropriately
+    // Login a user and redirect appropriately
     const username = req.body.username;
     const user = findUserByUsername(username);
     console.log("Attempting to log in:", username);
@@ -254,7 +254,7 @@ function loginUser(req, res) {
 
 // Function to logout a user
 function logoutUser(req, res) {
-    // TODO: Destroy session and redirect appropriately
+    // Destroy session and redirect appropriately
     req.session.destroy(err => {
         if (err) {
             console.error('Error destroying session:', err);
@@ -267,7 +267,7 @@ function logoutUser(req, res) {
 
 // Function to render the profile page
 function renderProfile(req, res) {
-    // TODO: Fetch user posts and render the profile page
+    // Fetch user posts and render the profile page
     const user = getCurrentUser(req);
     const posts = getPosts()
                     .filter(post => post.username === user.username)
@@ -281,7 +281,7 @@ function renderProfile(req, res) {
 
 // Function to update post likes
 function updatePostLikes(req, res) {
-    // TODO: Increment post likes if conditions are met
+    // Increment post likes if conditions are met
     const post = findPostById(req.params.id);
     if (post) {
         let isLiked = true;
@@ -310,7 +310,7 @@ function updatePostLikes(req, res) {
 
 // Function to handle avatar generation and serving
 function handleAvatar(req, res) {
-    // TODO: Generate and serve the user's avatar image
+    // Generate and serve the user's avatar image
     const user = findUserByUsername(req.params.username);
     if (user && user.avatar_url) {
         res.sendFile(path.join(__dirname, 'public', user.avatar_url));
@@ -322,7 +322,7 @@ function handleAvatar(req, res) {
 
 // Function to get the current user from session
 function getCurrentUser(req) {
-    // TODO: Return the user object if the session user ID matches
+    // Return the user object if the session user ID matches
     const user = findUserById(req.session.userId);
     return user;
 }
@@ -334,7 +334,7 @@ function getPosts() {
 
 // Function to add a new post
 function addPost(title, content, user) {
-    // TODO: Create a new post object and add to posts array
+    // Create a new post object and add to posts array
     const post = {
         id: generatePostId(),
         title: title,
@@ -350,7 +350,7 @@ function addPost(title, content, user) {
 
 // Function to generate an image avatar
 function generateAvatar(letter, width = 100, height = 100) {
-    // TODO: Generate an avatar image with a letter
+    // Generate an avatar image with a letter
 
     // 1. Choose a color scheme based on the letter [https://coolors.co/palette/f94144-f3722c-f8961e-f9844a-f9c74f-90be6d-43aa8b-4d908e-577590-277da1]
     const colors = ['#f94144', '#F3722C', '#F8961E', '#F9844A', '#F9C74F', '#90BE6D', '#43AA8B', '#4D908E', '#577590', '#277DA1'];
