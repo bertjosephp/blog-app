@@ -356,6 +356,18 @@ header nav ul .user-info .header-avatar-img {
     gap: 40px;
 }
 
+.post .post-content .post-status-bar .like-container .like-button {
+    width: 30px;
+    height: 30px;
+    border: 2px solid;
+    border-color: gray;
+    border-radius: 50%;
+    background: none;
+    background-color: white;
+    color: gray;
+    font-size: 20px;
+}
+
 /* * Profile * */
 
 .profile-container {

@@ -98,7 +98,11 @@ app.use(express.json());                            // Parse JSON bodies (as sen
 // template
 //
 app.get('/', (req, res) => {
-    const posts = getPosts();
+    const posts = getPosts().map(post => {
+        // check if post is liked by user
+        const isLikedByUser = post.likedBy.has(req.session.userId);
+        return {...post, isLikedByUser}
+    });
     const user = getCurrentUser(req) || {};
     res.render('home', { posts, user });
 });
@@ -272,7 +276,7 @@ function renderProfile(req, res) {
 // Function to update post likes
 function updatePostLikes(req, res) {
     // TODO: Increment post likes if conditions are met
-    const post = findPostById(Number(req.params.id));
+    const post = findPostById(req.params.id);
     if (post) {
         let isLiked = true;
         if (!post.likedBy.has(req.session.userId)) {
@@ -335,6 +339,7 @@ function addPost(title, content, user) {
         likedBy: new Set()
     };
     posts.push(post);
+    console.log(post);
 }
 
 // Function to generate an image avatar
@@ -391,7 +396,7 @@ function getDate() {
 
 // Function to find a post by post id
 function findPostById(postId) {
-    return posts.find(post => post.id === postId);
+    return posts.find(post => post.id == postId);
 }
 
 // Function to save avatar buffer as PNG file

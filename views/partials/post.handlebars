@@ -18,7 +18,12 @@
             <!-- everything that is shown in the status bar -->
             <div class="like-container">
                 {{#if loggedIn}}
-                    <button class="like-button" data-id="{{this.id}}" onclick="handleLikeClick(event)">♥</button>
+                    <button class="like-button" data-id="{{this.id}}" onclick="handleLikeClick(event)"
+                            style="color: {{#if this.isLikedByUser}}white{{else}}gray{{/if}};
+                                    background-color: {{#if this.isLikedByUser}}red{{else}}white{{/if}};
+                                    border-color: {{#if this.isLikedByUser}}red{{else}}gray{{/if}}">
+                        ♥
+                    </button>
                 {{/if}}
                 <span class="like-count">{{this.likes}} Likes</span>
             </div>
@@ -43,7 +48,9 @@
         .then(data => {
             // toggle like button
             const likeButton = event.target;
-            likeButton.style.color = data.isLiked ? 'red' : 'gray';
+            likeButton.style.color = data.isLiked ? 'white' : 'gray';
+            likeButton.style.backgroundColor = data.isLiked ? 'red' : 'white';
+            likeButton.style.borderColor = data.isLiked ? 'red' : 'gray';
 
             // update likes in real time
             const likeCountElement = event.target.parentElement.querySelector('.like-count');
