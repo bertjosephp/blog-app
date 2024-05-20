@@ -98,19 +98,15 @@ app.use(express.json());                            // Parse JSON bodies (as sen
 // template
 //
 app.get('/', (req, res) => {
+    const user = getCurrentUser(req) || {};
     const posts = getPosts().map(post => {
         // check if post is liked by user
         const isLikedByUser = post.likedBy.has(req.session.userId);
-
-        const postOwner = findUserById(req.session.userId);
-        let isOwnedByUser = false;
-        if (postOwner) {
-            isOwnedByUser = post.username === postOwner.username;
-        }
+        // check if post is owned by user
+        const isOwnedByUser = post.username === user.username;
 
         return {...post, isLikedByUser, isOwnedByUser}
     });
-    const user = getCurrentUser(req) || {};
     res.render('home', { posts, user });
 });
 
@@ -282,7 +278,10 @@ function renderProfile(req, res) {
                     .map(post => {
                         // check if post is liked by user
                         const isLikedByUser = post.likedBy.has(req.session.userId);
-                        return {...post, isLikedByUser}
+                        // check if post is owned by user
+                        const isOwnedByUser = post.username === user.username;
+
+                        return {...post, isLikedByUser, isOwnedByUser}
                     });
     res.render('profile', { posts: posts, user: user });
 }
