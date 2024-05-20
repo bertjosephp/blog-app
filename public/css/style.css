@@ -23,6 +23,10 @@ h1, h2, h3, h4, h5, h6, p, ul, ol, li {
     padding: 0;
 }
 
+button {
+    transition: 200ms;
+}
+
 button:hover {
     cursor: pointer;
     background-color: lightgray;
@@ -154,6 +158,10 @@ header nav ul .user-info .header-avatar-img {
     border-radius: 8px;
 } 
 
+.login-register section form button:hover {
+    transform: translateY(4px);
+}
+
 .login-register span {
     font-size: 24px;
 }
@@ -234,6 +242,10 @@ header nav ul .user-info .header-avatar-img {
     font-size: 20px;
     border-radius: 8px;
 } 
+
+.post-form form button:hover {
+    transform: translateY(4px);
+}
 
 .post-form .emoji-button {
     width: 48px;
@@ -349,7 +361,7 @@ header nav ul .user-info .header-avatar-img {
     color: gray;
 }
 
-.post .post-content .post-status-bar .like-container {
+.post .post-content .post-status-bar .post-button-container {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -357,7 +369,7 @@ header nav ul .user-info .header-avatar-img {
     gap: 40px;
 }
 
-.post .post-content .post-status-bar .like-container .like-button {
+.post .post-content .post-status-bar .post-button-container .like-button {
     width: 30px;
     height: 30px;
     border: 2px solid;
@@ -367,6 +379,24 @@ header nav ul .user-info .header-avatar-img {
     background-color: white;
     color: gray;
     font-size: 20px;
+}
+
+.post .post-content .post-status-bar .post-button-container .delete-button {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: none;
+    background-color: white;
+    color: gray;
+    font-size: 20px;
+}
+
+.post .post-content .post-status-bar .post-button-container .like-button:hover {
+    transform: scale(1.2);
+}
+
+.post .post-content .post-status-bar .post-button-container .delete-button:hover {
+    transform: scale(1.2);
 }
 
 /* * Profile * */
@@ -485,7 +515,7 @@ footer {
         gap: 20px;
     }
     
-    .post .post-content .post-status-bar .like-container {
+    .post .post-content .post-status-bar .post-button-container {
         gap: 10px;
     }
 }
