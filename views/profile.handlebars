@@ -29,7 +29,7 @@
     {{#if posts.length}}
         <ul>
             {{#each posts}}
-                {{> post this}}
+                {{> post this user=../user loggedIn=../loggedIn}}   
             {{/each}}
         </ul>
     {{else}}
