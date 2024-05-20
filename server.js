@@ -124,9 +124,6 @@ app.get('/error', (req, res) => {
 // Additional routes that you must implement
 
 
-app.get('/post/:id', (req, res) => {
-    // TODO: Render post detail page
-});
 app.post('/posts', (req, res) => {
     // TODO: Add a new post and redirect to home
     submitPost(req, res);
