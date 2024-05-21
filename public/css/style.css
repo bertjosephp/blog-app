@@ -510,6 +510,21 @@ header nav ul .user-info .header-avatar-img {
     gap: 20px;
 }
 
+/* * Error * */
+
+.error-container {
+    height: 100%;
+    width: 100%;
+    margin: auto 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.error-container h1 {
+    font-size: 72px;
+}
+
 /* Footer */
 
 footer {
