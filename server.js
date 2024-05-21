@@ -3,7 +3,7 @@ const expressHandlebars = require('express-handlebars');
 const session = require('express-session');
 const canvas = require('canvas');
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs').promises;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Configuration and Setup
@@ -101,6 +101,8 @@ app.get('/', (req, res) => {
     const user = getCurrentUser(req) || {};
     const userId = req.session.userId;
     const posts = getPosts().map(post => {
+        // get poster's avatar url
+        const posterAvatarUrl = findUserByUsername(post.username).avatar_url;
         // check if post is liked by user
         let isLikedByUser = false;
         if (userLikes[userId]) {
@@ -109,7 +111,7 @@ app.get('/', (req, res) => {
         // check if post is owned by user
         const isOwnedByUser = post.username === user.username;
 
-        return {...post, isLikedByUser, isOwnedByUser}
+        return {...post, posterAvatarUrl, isLikedByUser, isOwnedByUser};
     });
     res.render('home', { posts, user });
 });
@@ -180,24 +182,92 @@ app.listen(PORT, () => {
 // Support Functions and Variables
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// Example data for posts and users
-let posts = [
-    { id: 1, title: 'Sample Post', content: 'This is a sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0 },
-    { id: 2, title: 'Another Post', content: 'This is another sample post.', username: 'AnotherUser', timestamp: '2024-01-02 12:00', likes: 0 },
-    { id: 3, title: 'Sample Post', content: 'This is a second sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0 },
-    { id: 4, title: 'Sample Post', content: 'This is a third sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0 },
-    { id: 5, title: 'Sample Post', content: 'This is a fourth sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0 },
-    { id: 6, title: 'Another Post', content: 'This is another very very very very very very very very very very very very very very very very very very very very very very very very very long sample post.', username: 'AnotherUser', timestamp: '2024-01-01 10:00', likes: 0 },
-];
+// Sample data for testing the MicroBlog application
+
+// Users object array
 let users = [
-    { id: 1, username: 'SampleUser', avatar_url: `avatar/SampleUser.png`, memberSince: '2024-01-01 08:00' },
-    { id: 2, username: 'AnotherUser', avatar_url: `avatar/AnotherUser.png`, memberSince: '2024-01-02 09:00' },
+    {
+        id: 1,
+        username: 'TravelGuru',
+        avatar_url: undefined,
+        memberSince: '2024-05-01 10:00'
+    },
+    {
+        id: 2,
+        username: 'FoodieFanatic',
+        avatar_url: undefined,
+        memberSince: '2024-05-01 11:30'
+    },
+    {
+        id: 3,
+        username: 'TechSage',
+        avatar_url: undefined,
+        memberSince: '2024-05-01 12:15'
+    },
+    {
+        id: 4,
+        username: 'EcoWarrior',
+        avatar_url: undefined,
+        memberSince: '2024-05-01 13:45'
+    },
+    {
+        id: 5,
+        username: 'CrunchyCat',
+        avatar_url: 'https://creatorset.com/cdn/shop/files/Screenshot_2023-12-01_063405_1130x.png?v=1701405384',
+        memberSince: '2024-05-01 14:45'
+    }
+];
+
+// Posts object array
+let posts = [
+    {
+        id: 1,
+        title: 'Exploring Hidden Gems in Europe',
+        content: 'Just got back from an incredible trip through Europe. Visited some lesser-known spots that are truly breathtaking!',
+        username: 'TravelGuru',
+        timestamp: '2024-05-02 08:30',
+        likes: 0
+    },
+    {
+        id: 2,
+        title: 'The Ultimate Guide to Homemade Pasta',
+        content: 'Learned how to make pasta from scratch, and it’s easier than you think. Sharing my favorite recipes and tips.',
+        username: 'FoodieFanatic',
+        timestamp: '2024-05-02 09:45',
+        likes: 0
+    },
+    {
+        id: 3,
+        title: 'Top 5 Gadgets to Watch Out for in 2024',
+        content: 'Tech enthusiasts, here’s my list of the top 5 gadgets to look out for in 2024. Let me know your thoughts!',
+        username: 'TechSage',
+        timestamp: '2024-05-02 11:00',
+        likes: 0
+    },
+    {
+        id: 4,
+        title: 'Sustainable Living: Easy Swaps You Can Make Today',
+        content: 'Making the shift to sustainable living is simpler than it seems. Sharing some easy swaps to get you started.',
+        username: 'EcoWarrior',
+        timestamp: '2024-05-02 13:00',
+        likes: 0
+    },
+    {
+        id: 5,
+        title: 'Ultimate Cat Food Review: What is Best for Your Feline Friend?',
+        content: 'As a passionate cat owner, finding the right food for your feline can be a game-changer. This week, I haveve tested several top-rated cat foods to see which one reigns supreme for health, taste (according to my cat!)',
+        username: 'CrunchyCat',
+        timestamp: '2024-05-02 15:00',
+        likes: 0
+    }
 ];
 
 // Data structure to keep track of user post likes {userId: Set(postIds)}
 let userLikes = {
     1: new Set(),
-    2: new Set()
+    2: new Set(),
+    3: new Set(),
+    4: new Set()
 };
 
 // Function to find a user by username
@@ -222,7 +292,7 @@ function addUser(username) {
     const user = {
         id: userId,
         username: username,
-        avatar_url: avatarUrl,   
+        avatar_url: undefined,   
         memberSince: dateNow
     };
 
@@ -341,15 +411,28 @@ function updatePostLikes(req, res) {
 }
 
 // Function to handle avatar generation and serving
-function handleAvatar(req, res) {
+async function handleAvatar(req, res) {
     // Generate and serve the user's avatar image
-    const user = findUserByUsername(req.params.username);
-    if (user && user.avatar_url) {
-        res.sendFile(path.join(__dirname, 'public', user.avatar_url));
-    } else {
-        console.error('Error serving avatar image:', err);
-        res.redirect('/error');
+    const username = req.params.username;
+    const user = findUserByUsername(username);
+    const avatarPath = path.join(__dirname, 'public', 'avatar', `${username}.png`);
+
+    try {
+        // if avatar image file exists, then serve it
+        await fs.access(avatarPath, fs.constants.F_OK);
+        res.sendFile(avatarPath);
+    } catch (error) {
+        // if avatar image file does not exist, generate a new avatar, save it, and serve it
+        await saveAvatar(generateAvatar(username.charAt(0)), username);
+        res.sendFile(avatarPath);
     }
+
+    // if (user && user.avatar_url) {
+    //     res.sendFile(path.join(__dirname, 'public', user.avatar_url));
+    // } else {
+    //     console.error('Error serving avatar image:', err);
+    //     res.redirect('/error');
+    // }
 }
 
 // Function to get the current user from session
@@ -437,9 +520,9 @@ function findPostById(postId) {
 }
 
 // Function to save avatar buffer as PNG file
-function saveAvatar(buffer, username) {
+async function saveAvatar(buffer, username) {
     const avatarPath = path.join(__dirname, 'public', 'avatar', `${username}.png`);
-    fs.writeFileSync(avatarPath, buffer);
+    await fs.writeFile(avatarPath, buffer);
     return `/avatar/${username}.png`;
 }
 

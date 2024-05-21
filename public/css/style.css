@@ -331,9 +331,17 @@ header nav ul .user-info .header-avatar-img {
     box-shadow: 1px 1px 1px 1px gray;
 }
 
-.post .post-avatar .post-avatar-img {
+.post .post-avatar {
+    height: 80px;
+    width: 80px;
     border-radius: 10px;
-    max-height: 80px;
+    overflow: hidden;
+}
+
+.post .post-avatar .post-avatar-img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
 }
 
 .post .post-content {
