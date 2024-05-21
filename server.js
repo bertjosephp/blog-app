@@ -267,7 +267,8 @@ let userLikes = {
     1: new Set(),
     2: new Set(),
     3: new Set(),
-    4: new Set()
+    4: new Set(),
+    5: new Set()
 };
 
 // Function to find a user by username
@@ -363,6 +364,8 @@ function renderProfile(req, res) {
     const posts = getPosts()
                     .filter(post => post.username === user.username)
                     .map(post => {
+                        // get poster's avatar url
+                        const posterAvatarUrl = findUserByUsername(post.username).avatar_url;
                         // check if post is liked by user
                         let isLikedByUser = false;
                         if (userLikes[userId]) {
@@ -371,7 +374,7 @@ function renderProfile(req, res) {
                         // check if post is owned by user
                         const isOwnedByUser = post.username === user.username;
 
-                        return {...post, isLikedByUser, isOwnedByUser}
+                        return {...post, posterAvatarUrl, isLikedByUser, isOwnedByUser}
                     });
     res.render('profile', { posts: posts, user: user });
 }

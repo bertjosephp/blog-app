@@ -425,10 +425,17 @@ header nav ul .user-info .header-avatar-img {
     box-shadow: 1px 1px 1px 1px gray;
 }
 
+.profile-container .profile-avatar {
+    height: 160px;
+    width: 160px;
+    border-radius: 10px;
+    overflow: hidden;
+}
 
 .profile-container .profile-avatar .profile-avatar-img {
-    border-radius: 10px;
-    height: 160px;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
 }
 
 .profile-container .profile-info h2 {
