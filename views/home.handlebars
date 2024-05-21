@@ -106,7 +106,7 @@ function insertEmoji(emoji) {
 
 // Function to retrieve all emojis
 async function retrieveAllEmojis() {
-    const apiKey = '';  // insert emoji-api api key
+    const apiKey = "{{accessToken}}";     // insert Emoji API Key inside .env file
     const apiUrl = 'https://emoji-api.com/emojis?access_key=' + apiKey;
     try {
         const res = await fetch(apiUrl);

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const expressHandlebars = require('express-handlebars');
 const session = require('express-session');
@@ -11,6 +12,7 @@ const fs = require('fs').promises;
 
 const app = express();
 const PORT = 3000;
+const accessToken = process.env.EMOJI_API_KEY;
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,7 +115,13 @@ app.get('/', (req, res) => {
 
         return {...post, posterAvatarUrl, isLikedByUser, isOwnedByUser};
     });
-    res.render('home', { posts, user });
+
+    if (req.session.loggedIn) {
+        // include api key if user is logged in
+        res.render('home', { posts, user, accessToken });
+    } else {
+        res.render('home', { posts, user });
+    }
 });
 
 // Register GET route is used for error response from registration
@@ -166,7 +174,7 @@ app.get('/logout', (req, res) => {
     logoutUser(req, res);
 });
 app.post('/delete/:id', isAuthenticated, (req, res) => {
-    // TODO: Delete a post if the current user is the owner
+    // Delete a post if the current user is the owner
     deletePost(req, res);
 });
 
@@ -385,7 +393,6 @@ function updatePostLikes(req, res) {
     const userId = req.session.userId;
     const postId = req.params.id;
     const post = findPostById(postId);
-    console.log('old post likes', post.likes);
 
     if (post) {
         let isLiked = true;
@@ -404,7 +411,6 @@ function updatePostLikes(req, res) {
             likes: post.likes,
             isLiked: isLiked
         });
-        console.log('new post likes', post.likes);
     } else {
         res.status(404).json({
             success: false,
@@ -462,7 +468,6 @@ function addPost(title, content, user) {
         likes: 0
     };
     posts.push(post);
-    console.log(post);
 }
 
 // Function to generate an image avatar
