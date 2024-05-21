@@ -82,11 +82,16 @@ header nav ul .user-info {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 40px;
+    width: 40px;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 header nav ul .user-info .header-avatar-img {
-    border-radius: 10px;
-    max-height: 40px;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
 } 
 
 /* Body */
