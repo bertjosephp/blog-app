@@ -99,9 +99,13 @@ app.use(express.json());                            // Parse JSON bodies (as sen
 //
 app.get('/', (req, res) => {
     const user = getCurrentUser(req) || {};
+    const userId = req.session.userId;
     const posts = getPosts().map(post => {
         // check if post is liked by user
-        const isLikedByUser = post.likedBy.has(req.session.userId);
+        let isLikedByUser = false;
+        if (userLikes[userId]) {
+            isLikedByUser = userLikes[userId].has(post.id);
+        }
         // check if post is owned by user
         const isOwnedByUser = post.username === user.username;
 
@@ -178,17 +182,23 @@ app.listen(PORT, () => {
 
 // Example data for posts and users
 let posts = [
-    { id: 1, title: 'Sample Post', content: 'This is a sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0, likedBy: new Set() },
-    { id: 2, title: 'Another Post', content: 'This is another sample post.', username: 'AnotherUser', timestamp: '2024-01-02 12:00', likes: 0, likedBy: new Set() },
-    { id: 3, title: 'Sample Post', content: 'This is a second sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0, likedBy: new Set() },
-    { id: 4, title: 'Sample Post', content: 'This is a third sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0, likedBy: new Set() },
-    { id: 5, title: 'Sample Post', content: 'This is a fourth sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0, likedBy: new Set() },
-    { id: 6, title: 'Another Post', content: 'This is another very very very very very very very very very very very very very very very very very very very very very very very very very long sample post.', username: 'AnotherUser', timestamp: '2024-01-01 10:00', likes: 0, likedBy: new Set() },
+    { id: 1, title: 'Sample Post', content: 'This is a sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0 },
+    { id: 2, title: 'Another Post', content: 'This is another sample post.', username: 'AnotherUser', timestamp: '2024-01-02 12:00', likes: 0 },
+    { id: 3, title: 'Sample Post', content: 'This is a second sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0 },
+    { id: 4, title: 'Sample Post', content: 'This is a third sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0 },
+    { id: 5, title: 'Sample Post', content: 'This is a fourth sample post.', username: 'SampleUser', timestamp: '2024-01-01 10:00', likes: 0 },
+    { id: 6, title: 'Another Post', content: 'This is another very very very very very very very very very very very very very very very very very very very very very very very very very long sample post.', username: 'AnotherUser', timestamp: '2024-01-01 10:00', likes: 0 },
 ];
 let users = [
     { id: 1, username: 'SampleUser', avatar_url: `avatar/SampleUser.png`, memberSince: '2024-01-01 08:00' },
     { id: 2, username: 'AnotherUser', avatar_url: `avatar/AnotherUser.png`, memberSince: '2024-01-02 09:00' },
 ];
+
+// Data structure to keep track of user post likes {userId: Set(postIds)}
+let userLikes = {
+    1: new Set(),
+    2: new Set()
+};
 
 // Function to find a user by username
 function findUserByUsername(username) {
@@ -205,13 +215,19 @@ function findUserById(userId) {
 // Function to add a new user
 function addUser(username) {
     // Create a new user object and add to users array
+    const userId = generateUserId();
+    const avatarUrl = saveAvatar(generateAvatar(username.charAt(0)), username);     // set default avatar
+    const dateNow = getDate();
+
     const user = {
-        id: generateUserId(),
+        id: userId,
         username: username,
-        avatar_url: saveAvatar(generateAvatar(username.charAt(0)), username),   // set default avatar
-        memberSince: getDate()
+        avatar_url: avatarUrl,   
+        memberSince: dateNow
     };
+
     users.push(user);
+    userLikes[userId] = new Set();  // initialize liked posts
 }
 
 // Middleware to check if user is authenticated
@@ -273,11 +289,15 @@ function logoutUser(req, res) {
 function renderProfile(req, res) {
     // Fetch user posts and render the profile page
     const user = getCurrentUser(req);
+    const userId = req.session.userId;
     const posts = getPosts()
                     .filter(post => post.username === user.username)
                     .map(post => {
                         // check if post is liked by user
-                        const isLikedByUser = post.likedBy.has(req.session.userId);
+                        let isLikedByUser = false;
+                        if (userLikes[userId]) {
+                            isLikedByUser = userLikes[userId].has(post.id);
+                        }
                         // check if post is owned by user
                         const isOwnedByUser = post.username === user.username;
 
@@ -289,24 +309,29 @@ function renderProfile(req, res) {
 // Function to update post likes
 function updatePostLikes(req, res) {
     // Increment post likes if conditions are met
-    const post = findPostById(req.params.id);
+    const userId = req.session.userId;
+    const postId = req.params.id;
+    const post = findPostById(postId);
+    console.log('old post likes', post.likes);
+
     if (post) {
         let isLiked = true;
-        if (!post.likedBy.has(req.session.userId)) {
+        if (!userLikes[userId].has(postId)) {
             // like post
             post.likes += 1;
-            post.likedBy.add(req.session.userId);
+            userLikes[userId].add(postId);
         } else {
             // unlike post
             post.likes -= 1;
-            post.likedBy.delete(req.session.userId);
+            userLikes[userId].delete(postId);
             isLiked = false;
         }
         res.json({
             success: true,
             likes: post.likes,
             isLiked: isLiked
-        })
+        });
+        console.log('new post likes', post.likes);
     } else {
         res.status(404).json({
             success: false,
@@ -348,8 +373,7 @@ function addPost(title, content, user) {
         content: content,
         username: user.username,
         timestamp: getDate(),
-        likes: 0,
-        likedBy: new Set()
+        likes: 0
     };
     posts.push(post);
     console.log(post);
