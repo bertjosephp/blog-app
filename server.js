@@ -435,13 +435,6 @@ async function handleAvatar(req, res) {
         await saveAvatar(generateAvatar(username.charAt(0)), username);
         res.sendFile(avatarPath);
     }
-
-    // if (user && user.avatar_url) {
-    //     res.sendFile(path.join(__dirname, 'public', user.avatar_url));
-    // } else {
-    //     console.error('Error serving avatar image:', err);
-    //     res.redirect('/error');
-    // }
 }
 
 // Function to get the current user from session
