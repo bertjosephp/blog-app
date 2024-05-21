@@ -1,5 +1,8 @@
 :root {
-    --light-gray: #f0f2f5;
+    --bird-blue: #6FB2D4;
+    --bird-white: #f0f2f5;
+    --bird-orange: #FC986A;
+    --bird-pink: #EE6D8F;
 }
 
 html {
@@ -14,7 +17,7 @@ body {
     margin: 0;
     display: flex;
     flex-direction: column;
-    background-color: var(--light-gray);
+    background-color: var(--bird-white);
     color: black;
 }
 
@@ -23,13 +26,29 @@ h1, h2, h3, h4, h5, h6, p, ul, ol, li {
     padding: 0;
 }
 
+a:hover {
+    color: var(--bird-white);
+}
+
 button {
     transition: 200ms;
 }
 
 button:hover {
     cursor: pointer;
-    background-color: lightgray;
+    background-color: var(--bird-orange);
+}
+
+input {
+    transition: 200ms;
+}
+
+input:focus {
+    outline: none;
+}
+
+textarea:focus {
+    outline: none;
 }
 
 /* Header */
@@ -39,10 +58,9 @@ header {
     padding: 20px 0;
     display: flex;
     justify-content: space-between;
-    background-color: white;
+    background-color: var(--bird-blue);
     color: black;
     border-bottom: 1px solid gray;
-    /* box-shadow: 0px 2px gray; */
 }
 
 header .logo {
@@ -51,7 +69,21 @@ header .logo {
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    gap: 20px;
+    gap: 10px;
+    color: var(--bird-white);
+}
+
+header .logo .logo-img-container {
+    height: 40px;
+    width: 40px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+header .logo .logo-img-container  img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
 }
 
 header nav {
@@ -327,6 +359,7 @@ header nav ul .user-info .header-avatar-img {
     min-width: 720px;
     padding: 20px;
     border: 1px solid gray;
+    border-left: 8px solid var(--bird-orange);
     border-radius: 10px;
     display: flex;
     flex-direction: row;
@@ -426,7 +459,7 @@ header nav ul .user-info .header-avatar-img {
     gap: 40px;
     border: 1px solid gray;
     border-radius: 10px;
-    background-color: white;
+    background-color: var(--bird-white);
     box-shadow: 1px 1px 1px 1px gray;
 }
 
@@ -485,7 +518,7 @@ footer {
     padding: 20px 0;
     display: flex;
     justify-content: center;
-    background-color: white;
+    background-color: var(--bird-blue);
     color: black;
 }
 
