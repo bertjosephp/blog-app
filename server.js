@@ -108,7 +108,7 @@ app.get('/', (req, res) => {
         // check if post is liked by user
         let isLikedByUser = false;
         if (userLikes[userId]) {
-            isLikedByUser = userLikes[userId].has(post.id);
+            isLikedByUser = userLikes[userId].has(String(post.id));
         }
         // check if post is owned by user
         const isOwnedByUser = post.username === user.username;
@@ -377,7 +377,7 @@ function renderProfile(req, res) {
                         // check if post is liked by user
                         let isLikedByUser = false;
                         if (userLikes[userId]) {
-                            isLikedByUser = userLikes[userId].has(post.id);
+                            isLikedByUser = userLikes[userId].has(String(post.id));
                         }
                         // check if post is owned by user
                         const isOwnedByUser = post.username === user.username;
