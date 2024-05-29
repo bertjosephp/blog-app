@@ -5,6 +5,8 @@ const session = require('express-session');
 const canvas = require('canvas');
 const path = require('path');
 const fs = require('fs').promises;
+const sqlite3 = require('sqlite3');
+const sqlite = require('sqlite');
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Configuration and Setup
@@ -182,9 +184,35 @@ app.post('/delete/:id', isAuthenticated, (req, res) => {
 // Server Activation
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+// Function to start server
+async function startServer() {
+    try {
+        const db = await getDBConnection();
+        console.log('Connected to database.');
+
+        app.listen(PORT, () => {
+            console.log(`Server is running on http://localhost:${PORT}`);
+        });
+    } catch (error) {
+        console.error('Failed to connect to database:', error);
+    }
+}
+
+startServer();
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Database Functions
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// Function to establish connection with database
+async function getDBConnection() {
+    const db = await sqlite.open({
+        filename: 'your_database_file.db',
+        driver: sqlite3.Database
+    });
+
+    return db;
+}
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Support Functions and Variables
