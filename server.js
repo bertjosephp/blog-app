@@ -26,6 +26,7 @@ const PORT = 3000;
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const accessToken = process.env.EMOJI_API_KEY;
+const DB_PATH = process.env.DB_PATH;
 
 // Configure passport
 passport.use(new GoogleStrategy({
@@ -246,7 +247,7 @@ app.get('/googleLogout', (req, res) => {
 // Function to establish connection with database
 async function getDBConnection() {
     const db = await sqlite.open({
-        filename: 'blog.db',
+        filename: DB_PATH,
         driver: sqlite3.Database
     });
 
