@@ -147,12 +147,19 @@ app.get('/', async (req, res) => {
             likedPosts = rows.map(row => row.post_id);
         }
 
-        const postsWithDetails = posts.map(post => {
-            const posterAvatarUrl = post.avatar_url;
-            const isLikedByUser = likedPosts.includes(post.id);
-            const isOwnedByUser = post.username === (user ? user.username : null);
-            return {...post, posterAvatarUrl, isLikedByUser, isOwnedByUser};
-        })
+        const postsWithDetails = await Promise.all(
+            posts.map(async post => {
+                const posterUsername = post.username;
+                const db = await getDBConnection();
+                const postUser = await db.get('SELECT * FROM users WHERE username = ?', posterUsername);
+    
+                const posterAvatarUrl = postUser.avatar_url;
+                const isLikedByUser = likedPosts.includes(post.id);
+                const isOwnedByUser = post.username === (user ? user.username : null);
+
+                return {...post, posterAvatarUrl, isLikedByUser, isOwnedByUser};
+            })
+        );
 
         if (req.session.loggedIn) {
             // include api key if user is logged in
@@ -377,12 +384,19 @@ async function renderProfile(req, res) {
     const rows = await db.all('SELECT post_id FROM user_likes WHERE user_id = ?', userId);
     const likedPosts = rows.map(row => row.post_id);
 
-    postsWithDetails = posts.map(post => {
-        const posterAvatarUrl = post.avatar_url;
-        const isLikedByUser = likedPosts.includes(post.id);
-        const isOwnedByUser = post.username === (user ? user.username : null);
-        return {...post, posterAvatarUrl, isLikedByUser, isOwnedByUser};
-    })
+    postsWithDetails = await Promise.all(
+        posts.map(async post => {
+            const posterUsername = post.username;
+            const db = await getDBConnection();
+            const postUser = await db.get('SELECT * FROM users WHERE username = ?', posterUsername);
+
+            const posterAvatarUrl = postUser.avatar_url;
+            const isLikedByUser = likedPosts.includes(post.id);
+            const isOwnedByUser = post.username === (user ? user.username : null);
+            
+            return {...post, posterAvatarUrl, isLikedByUser, isOwnedByUser};
+        })
+    );
         
     res.render('profile', { posts: postsWithDetails, user: user });
 }
