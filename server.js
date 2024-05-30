@@ -143,12 +143,8 @@ app.get('/', async (req, res) => {
         let likedPosts = [];
         if (userId) {
             const db = await getDBConnection();
-            try {
-                const rows = await db.all('SELECT post_id FROM user_likes WHERE user_id = ?', userId);
-                likedPosts = rows.map(row => row.post_id);
-            } finally {
-                await db.close();
-            }
+            const rows = await db.all('SELECT post_id FROM user_likes WHERE user_id = ?', userId);
+            likedPosts = rows.map(row => row.post_id);
         }
 
         const postsWithDetails = posts.map(post => {
@@ -244,12 +240,16 @@ app.get('/googleLogout', (req, res) => {
 // Server Activation
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+let db;
+
 // Function to establish connection with database
 async function getDBConnection() {
-    const db = await sqlite.open({
-        filename: DB_PATH,
-        driver: sqlite3.Database
-    });
+    if (!db) {
+        db = await sqlite.open({
+            filename: DB_PATH,
+            driver: sqlite3.Database
+        });
+    }
 
     return db;
 }
@@ -279,24 +279,16 @@ startServer();
 async function findUserByUsername(username) {
     // Return user object if found, otherwise return undefined
     const db = await getDBConnection();
-    try {
-        const user = await db.get('SELECT * FROM users WHERE username = ?', username);
-        return user;
-    } finally {
-        await db.close();
-    }
+    const user = await db.get('SELECT * FROM users WHERE username = ?', username);
+    return user;
 }
 
 // Function to find a user by hashed google ID
 async function findUserByHashedGoogleId(hashedGoogleId) {
     // Return user object if found, otherwise return undefined
     const db = await getDBConnection();
-    try {
-        const user = await db.get('SELECT * FROM users WHERE hashedGoogleId = ?', hashedGoogleId);
-        return user;
-    } finally {
-        await db.close();
-    }
+    const user = await db.get('SELECT * FROM users WHERE hashedGoogleId = ?', hashedGoogleId);
+    return user;
 }
 
 // Function to add a new user
@@ -306,14 +298,10 @@ async function addUser(username) {
     const avatarUrl = undefined;    // set default avatar
     const memberSince = getDate();
     const db = await getDBConnection();
-    try {
-        await db.run(
-            'INSERT INTO users (username, hashedGoogleId, avatar_url, memberSince) VALUES (?, ?, ?, ?)',
-            [username, hashedGoogleId, avatarUrl, memberSince]
-        );
-    } finally {
-        await db.close();
-    }
+    await db.run(
+        'INSERT INTO users (username, hashedGoogleId, avatar_url, memberSince) VALUES (?, ?, ?, ?)',
+        [username, hashedGoogleId, avatarUrl, memberSince]
+    );
 }
 
 // Middleware to check if user is authenticated
@@ -331,18 +319,14 @@ async function registerUser(req, res) {
     // Register a new user and redirect appropriately
     const username = req.body.username;
     const db = await getDBConnection();
-    try {
-        const user = await db.get('SELECT * FROM users WHERE username = ?', username);
-        if (user) {
-            // Username already exists
-            res.redirect('register?error=Username+already+exists');
-        } else {
-            // Add the new user
-            await addUser(username);
-            res.redirect('/login');
-        }
-    } finally {
-        await db.close();
+    const user = await db.get('SELECT * FROM users WHERE username = ?', username);
+    if (user) {
+        // Username already exists
+        res.redirect('register?error=Username+already+exists');
+    } else {
+        // Add the new user
+        await addUser(username);
+        res.redirect('/login');
     }
 }
 
@@ -354,25 +338,21 @@ async function registerAndLoginGoogleUser(req, res) {
     const avatarUrl = undefined;        // set default avatar
     const memberSince = getDate();
     const db = await getDBConnection();
-    try {
-        const user = await db.get('SELECT * FROM users WHERE username = ?', username);
-        if (user) {
-            // Username already exists
-            res.redirect('registerUsername?error=Username+already+exists');
-        } else {
-            // Add the new user
-            await db.run(
-                'INSERT INTO users (username, hashedGoogleId, avatar_url, memberSince) VALUES (?, ?, ?, ?)',
-                [username, hashedGoogleId, avatarUrl, memberSince]
-            );
-            // successful login
-            const newUser = await db.get('SELECT * FROM users WHERE username = ?', username);
-            req.session.userId = newUser.id;
-            req.session.loggedIn = true;
-            res.redirect('/');
-        }
-    } finally {
-        await db.close();
+    const user = await db.get('SELECT * FROM users WHERE username = ?', username);
+    if (user) {
+        // Username already exists
+        res.redirect('registerUsername?error=Username+already+exists');
+    } else {
+        // Add the new user
+        await db.run(
+            'INSERT INTO users (username, hashedGoogleId, avatar_url, memberSince) VALUES (?, ?, ?, ?)',
+            [username, hashedGoogleId, avatarUrl, memberSince]
+        );
+        // successful login
+        const newUser = await db.get('SELECT * FROM users WHERE username = ?', username);
+        req.session.userId = newUser.id;
+        req.session.loggedIn = true;
+        res.redirect('/');
     }
 }
 
@@ -412,20 +392,18 @@ async function renderProfile(req, res) {
     const userId = req.session.userId;
     const db = await getDBConnection();
     let postsWithDetails = [];
-    try {
-        const posts = await db.all('SELECT * FROM posts WHERE username = ? ORDER BY timestamp DESC', user.username);
-        const rows = await db.all('SELECT post_id FROM user_likes WHERE user_id = ?', userId);
-        const likedPosts = rows.map(row => row.post_id);
+    
+    const posts = await db.all('SELECT * FROM posts WHERE username = ? ORDER BY timestamp DESC', user.username);
+    const rows = await db.all('SELECT post_id FROM user_likes WHERE user_id = ?', userId);
+    const likedPosts = rows.map(row => row.post_id);
 
-        postsWithDetails = posts.map(post => {
-            const posterAvatarUrl = post.avatar_url;
-            const isLikedByUser = likedPosts.includes(post.id);
-            const isOwnedByUser = post.username === (user ? user.username : null);
-            return {...post, posterAvatarUrl, isLikedByUser, isOwnedByUser};
-        })
-    } finally {
-        await db.close();
-    }
+    postsWithDetails = posts.map(post => {
+        const posterAvatarUrl = post.avatar_url;
+        const isLikedByUser = likedPosts.includes(post.id);
+        const isOwnedByUser = post.username === (user ? user.username : null);
+        return {...post, posterAvatarUrl, isLikedByUser, isOwnedByUser};
+    })
+        
     res.render('profile', { posts: postsWithDetails, user: user });
 }
 
@@ -461,8 +439,6 @@ async function updatePostLikes(req, res) {
     } catch (error) {
         console.error('Error updating post likes:', error);
         res.status(500).json({ success: false, message: 'Error updating post likes.' });
-    } finally {
-        await db.close();
     }
 }
 
@@ -489,23 +465,15 @@ async function getCurrentUser(req) {
     // Return the user object if the session user ID matches
     const userId = req.session.userId;
     const db = await getDBConnection();
-    try {
-        const user = await db.get('SELECT * FROM users WHERE id = ?', userId);
-        return user;
-    } finally {
-        await db.close();
-    }
+    const user = await db.get('SELECT * FROM users WHERE id = ?', userId);
+    return user;
 }
 
 // Function to get all posts, sorted by latest first
 async function getPosts() {
     const db = await getDBConnection();
-    try {
-        rows = await db.all('SELECT * FROM posts ORDER BY timestamp DESC')
-        return rows;
-    } finally {
-        await db.close();
-    }
+    rows = await db.all('SELECT * FROM posts ORDER BY timestamp DESC')
+    return rows;
 }
 
 // Function to add a new post
@@ -513,16 +481,10 @@ async function addPost(title, content, user) {
     // Create a new post object and add to posts array
     const timestamp = getDate();
     const db = await getDBConnection();
-    try {
-        await db.run(
-            'INSERT INTO posts (title, content, username, timestamp, likes) VALUES (?, ?, ?, ?, ?)',
-            [title, content, user.username, timestamp, 0]
-        );
-    } catch (error) {
-        console.error('Failed to add post:', error);
-    } finally {
-        await db.close();
-    }
+    await db.run(
+        'INSERT INTO posts (title, content, username, timestamp, likes) VALUES (?, ?, ?, ?, ?)',
+        [title, content, user.username, timestamp, 0]
+    );
 }
 
 // Function to generate an image avatar
@@ -562,12 +524,8 @@ function getDate() {
 // Function to find a post by post id
 async function findPostById(postId) {
     const db = await getDBConnection();
-    try {
-        const post = await db.get('SELECT * FROM posts WHERE id = ?', postId);
-        return post;
-    } finally {
-        await db.close();
-    }
+    const post = await db.get('SELECT * FROM posts WHERE id = ?', postId);
+    return post;
 }
 
 // Function to save avatar buffer as PNG file
@@ -593,38 +551,32 @@ async function deletePost(req, res) {
         res.json({ success: true });
     } catch (error) {
         res.status(404).json({ success: false, message: 'Post not found' });
-    } finally {
-        await db.close();
     }
 }
 
 // Function to get posts, sorted by specified method
 async function getSortedPosts(sortMethod) {
     const db = await getDBConnection();
-    try {
-        let query = '';
-        switch (sortMethod) {
-            case 'newest':
-                query = 'SELECT * FROM posts ORDER BY timestamp DESC';      // sort by newest
-                break;
-            case 'oldest':
-                query = 'SELECT * FROM posts ORDER BY timestamp ASC';       // sort by oldest
-                break;
-            case 'most-likes':
-                query = 'SELECT * FROM posts ORDER BY likes DESC';          // sort by most likes
-                break;
-            case 'least-likes':
-                query = 'SELECT * FROM posts ORDER BY likes ASC';           // sort by least likes
-                break;
-            default:
-                query = 'SELECT * FROM posts ORDER BY timestamp DESC';      // default: sort by newest
-                break;
-        }
-        const rows = await db.all(query);
-        return rows;
-    } finally {
-        await db.close();
+    let query = '';
+    switch (sortMethod) {
+        case 'newest':
+            query = 'SELECT * FROM posts ORDER BY timestamp DESC';      // sort by newest
+            break;
+        case 'oldest':
+            query = 'SELECT * FROM posts ORDER BY timestamp ASC';       // sort by oldest
+            break;
+        case 'most-likes':
+            query = 'SELECT * FROM posts ORDER BY likes DESC';          // sort by most likes
+            break;
+        case 'least-likes':
+            query = 'SELECT * FROM posts ORDER BY likes ASC';           // sort by least likes
+            break;
+        default:
+            query = 'SELECT * FROM posts ORDER BY timestamp DESC';      // default: sort by newest
+            break;
     }
+    const rows = await db.all(query);
+    return rows;
 }
 
 // Function to check if Google user exists in database and respond appropriately
