@@ -226,18 +226,7 @@ app.post('/delete/:id', isAuthenticated, (req, res) => {
 });
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), async (req, res) => {
-    const hashedGoogleId = crypto.createHash('sha256').update(req.user.id).digest('hex');
-    req.session.hashedGoogleId = hashedGoogleId;
-    const user = await findUserByHashedGoogleId(hashedGoogleId);
-    if (!user) {
-        // register new google user
-        res.redirect('/registerUsername');
-    } else {
-        // successful login, redirect to home
-        req.session.userId = user.id;
-        req.session.loggedIn = true;
-        res.redirect('/');
-    }
+    await handleGoogleCallback(req, res);
 });
 app.get('/registerUsername', (req, res) => {
     res.render('registerUsername', { regError: req.query.error });
@@ -291,18 +280,6 @@ async function findUserByUsername(username) {
     const db = await getDBConnection();
     try {
         const user = await db.get('SELECT * FROM users WHERE username = ?', username);
-        return user;
-    } finally {
-        await db.close();
-    }
-}
-
-// Function to find a user by user ID
-async function findUserById(userId) {
-    // Return user object if found, otherwise return undefined
-    const db = await getDBConnection();
-    try {
-        const user = await db.get('SELECT * FROM users WHERE id = ?', userId);
         return user;
     } finally {
         await db.close();
@@ -509,8 +486,14 @@ async function handleAvatar(req, res) {
 // Function to get the current user from session
 async function getCurrentUser(req) {
     // Return the user object if the session user ID matches
-    const user = await findUserById(req.session.userId);
-    return user;
+    const userId = req.session.userId;
+    const db = await getDBConnection();
+    try {
+        const user = await db.get('SELECT * FROM users WHERE id = ?', userId);
+        return user;
+    } finally {
+        await db.close();
+    }
 }
 
 // Function to get all posts, sorted by latest first
@@ -640,5 +623,21 @@ async function getSortedPosts(sortMethod) {
         return rows;
     } finally {
         await db.close();
+    }
+}
+
+// Function to check if Google user exists in database and respond appropriately
+async function handleGoogleCallback(req, res) {
+    const hashedGoogleId = crypto.createHash('sha256').update(req.user.id).digest('hex');
+    req.session.hashedGoogleId = hashedGoogleId;
+    const user = await findUserByHashedGoogleId(hashedGoogleId);
+    if (!user) {
+        // register new google user
+        res.redirect('/registerUsername');
+    } else {
+        // successful login, redirect to home
+        req.session.userId = user.id;
+        req.session.loggedIn = true;
+        res.redirect('/');
     }
 }
