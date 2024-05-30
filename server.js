@@ -242,7 +242,7 @@ app.post('/registerUsername', async (req, res) => {
     await registerAndLoginGoogleUser(req, res);
 });
 app.get('/googleLogout', (req, res) => {
-
+    res.render('googleLogout');
 })
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -417,7 +417,7 @@ function logoutUser(req, res) {
             console.error('Error destroying session:', err);
             res.redirect('/error');
         } else {
-            res.redirect('/');
+            res.redirect('/googleLogout');
         }
     });
 }
