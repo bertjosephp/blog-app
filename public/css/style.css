@@ -566,6 +566,20 @@ header nav ul .user-info .header-avatar-img {
     font-size: 72px;
 }
 
+/* * Logout iFrame * */
+
+.logout-iframe-message-container {
+    margin: auto 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.logout-iframe-message-container p {
+    font-size: 24px;
+}
+
 /* * Logout Confirmation * */
 
 .logout-confirmation-container {
