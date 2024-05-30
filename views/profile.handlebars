@@ -22,6 +22,16 @@
 
 <section class="user-posts">
     <h2>Your {{{postNeoType}}}s</h2>
+
+    <form class="sort-form">
+        <label for="sort">Sort By:</label>
+        <select name="sort" id="sort" onchange="this.form.submit()">
+            <option value="newest" {{#if (equal sortMethod "newest")}}selected{{/if}}>Newest</option>
+            <option value="oldest" {{#if (equal sortMethod "oldest")}}selected{{/if}}>Oldest</option>
+            <option value="most-likes" {{#if (equal sortMethod "most-likes")}}selected{{/if}}>Most Likes</option>
+                <option value="least-likes" {{#if (equal sortMethod "least-likes")}}selected{{/if}}>Least Likes</option>
+        </select>
+    </form>
     
     {{#if posts.length}}
         <ul>
@@ -35,3 +45,8 @@
         <p>Start {{{toLowerCase postNeoType}}}ing!</p>
     {{/if}}
 </section>
+
+<script>
+    // Change sort method
+    document.getElementById('sort').value = '{{sortMethod}}';
+</script>

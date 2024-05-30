@@ -385,7 +385,7 @@ header nav ul .user-info .header-avatar-img {
     text-align: center;
 }
 
-.posts-list #sort-form {
+.posts-list .sort-form {
     height: 20px;
     margin-bottom: 10px;
     display: flex;
@@ -546,10 +546,20 @@ header nav ul .user-info .header-avatar-img {
 }
 
 .user-posts h2 {
-    margin-bottom: 40px;
+    margin-bottom: 10px;
     padding: 0 20px 8px 20px;
     font-size: 32px;
     border-bottom: 1px solid gray;
+}
+
+.user-posts .sort-form {
+    height: 20px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
 }
 
 .user-posts ul {

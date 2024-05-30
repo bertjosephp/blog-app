@@ -326,6 +326,31 @@ async function getSortedPosts(sortMethod) {
     return rows;
 }
 
+// Function to get posts, sorted by specified method
+async function getSortedPostsForUser(sortMethod, username) {
+    const db = await getDBConnection();
+    let query = '';
+    switch (sortMethod) {
+        case 'newest':
+            query = 'SELECT * FROM posts WHERE username = ? ORDER BY timestamp DESC';   // sort by newest
+            break;
+        case 'oldest':
+            query = 'SELECT * FROM posts WHERE username = ? ORDER BY timestamp ASC';    // sort by oldest
+            break;
+        case 'most-likes':
+            query = 'SELECT * FROM posts WHERE username = ? ORDER BY likes DESC';       // sort by most likes
+            break;
+        case 'least-likes':
+            query = 'SELECT * FROM posts WHERE username = ? ORDER BY likes ASC';        // sort by least likes
+            break;
+        default:
+            query = 'SELECT * FROM posts WHERE username = ? ORDER BY timestamp DESC';   // default: sort by newest
+            break;
+    }
+    const rows = await db.all(query, [username]);
+    return rows;
+}
+
 // Function to add a new post
 async function addPost(title, content, user) {
     // Create a new post object and add to posts array
@@ -377,10 +402,11 @@ async function renderProfile(req, res) {
     // Fetch user posts and render the profile page
     const user = await getCurrentUser(req);
     const userId = req.session.userId;
+    const sortMethod = req.query.sort || 'newest'   // default sort method
     const db = await getDBConnection();
     let postsWithDetails = [];
     
-    const posts = await db.all('SELECT * FROM posts WHERE username = ? ORDER BY timestamp DESC', user.username);
+    const posts = await getSortedPostsForUser(sortMethod, user.username);
     const rows = await db.all('SELECT post_id FROM user_likes WHERE user_id = ?', userId);
     const likedPosts = rows.map(row => row.post_id);
 
@@ -398,7 +424,7 @@ async function renderProfile(req, res) {
         })
     );
         
-    res.render('profile', { posts: postsWithDetails, user: user });
+    res.render('profile', { posts: postsWithDetails, user: user, sortMethod: sortMethod });
 }
 
 // Function to handle avatar generation and serving

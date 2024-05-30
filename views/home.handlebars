@@ -31,7 +31,7 @@
         <!-- recent posts -->
         <h2>Recent {{{postNeoType}}}s</h2>
 
-        <form id="sort-form">
+        <form class="sort-form">
             <label for="sort">Sort By:</label>
             <select name="sort" id="sort" onchange="this.form.submit()">
                 <option value="newest" {{#if (equal sortMethod "newest")}}selected{{/if}}>Newest</option>
