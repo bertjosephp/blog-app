@@ -114,6 +114,7 @@ app.use((req, res, next) => {
     res.locals.postNeoType = 'Chirp';
     res.locals.loggedIn = req.session.loggedIn || false;
     res.locals.userId = req.session.userId || '';
+    res.locals.hashedGoogleId = req.session.hashedGoogleId || '';
     next();
 });
 
@@ -218,6 +219,32 @@ app.post('/delete/:id', isAuthenticated, (req, res) => {
     // Delete a post if the current user is the owner
     deletePost(req, res);
 });
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile'] })
+);
+app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), async (req, res) => {
+    const hashedGoogleId = crypto.createHash('sha256').update(req.user.id).digest('hex');
+    req.session.hashedGoogleId = hashedGoogleId;
+    const user = await findUserByHashedGoogleId(hashedGoogleId);
+    if (!user) {
+        // register new google user
+        res.redirect('/registerUsername');
+    } else {
+        // successful login, redirect to home
+        req.session.userId = user.id;
+        req.session.loggedIn = true;
+        res.redirect('/');
+    }
+});
+app.get('/registerUsername', (req, res) => {
+    res.render('registerUsername', { regError: req.query.error });
+});
+app.post('/registerUsername', async (req, res) => {
+    // Register a new user
+    await registerAndLoginGoogleUser(req, res);
+});
+app.get('/googleLogout', (req, res) => {
+
+})
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Server Activation
@@ -257,7 +284,6 @@ startServer();
 // Function to find a user by username
 async function findUserByUsername(username) {
     // Return user object if found, otherwise return undefined
-    // return users.find(user => user.username === username);
     const db = await getDBConnection();
     try {
         const user = await db.get('SELECT * FROM users WHERE username = ?', username);
@@ -269,8 +295,7 @@ async function findUserByUsername(username) {
 
 // Function to find a user by user ID
 async function findUserById(userId) {
-    // // Return user object if found, otherwise return undefined
-    // return users.find(user => user.id === userId);
+    // Return user object if found, otherwise return undefined
     const db = await getDBConnection();
     try {
         const user = await db.get('SELECT * FROM users WHERE id = ?', userId);
@@ -280,10 +305,22 @@ async function findUserById(userId) {
     }
 }
 
+// Function to find a user by hashed google ID
+async function findUserByHashedGoogleId(hashedGoogleId) {
+    // Return user object if found, otherwise return undefined
+    const db = await getDBConnection();
+    try {
+        const user = await db.get('SELECT * FROM users WHERE hashedGoogleId = ?', hashedGoogleId);
+        return user;
+    } finally {
+        await db.close();
+    }
+}
+
 // Function to add a new user
 async function addUser(username) {
     // Create a new user object and add to users array
-    const hashedGoogleId = generateRandomId();
+    const hashedGoogleId = undefined;
     const avatarUrl = undefined;    // set default avatar
     const memberSince = getDate();
     const db = await getDBConnection();
@@ -327,8 +364,54 @@ async function registerUser(req, res) {
     }
 }
 
+// Function to register a google user
+async function registerAndLoginGoogleUser(req, res) {
+    // Register a new user and redirect appropriately
+    const username = req.body.username;
+    const hashedGoogleId = req.session.hashedGoogleId;
+    const avatarUrl = undefined;        // set default avatar
+    const memberSince = getDate();
+    const db = await getDBConnection();
+    try {
+        const user = await db.get('SELECT * FROM users WHERE username = ?', username);
+        if (user) {
+            // Username already exists
+            res.redirect('registerUsername?error=Username+already+exists');
+        } else {
+            // Add the new user
+            await db.run(
+                'INSERT INTO users (username, hashedGoogleId, avatar_url, memberSince) VALUES (?, ?, ?, ?)',
+                [username, hashedGoogleId, avatarUrl, memberSince]
+            );
+            // successful login
+            const newUser = await db.get('SELECT * FROM users WHERE username = ?', username);
+            req.session.userId = newUser.id;
+            req.session.loggedIn = true;
+            res.redirect('/');
+        }
+    } finally {
+        await db.close();
+    }
+}
+
 // Function to login a user
 async function loginUser(req, res) {
+    // Login a user and redirect appropriately
+    const username = req.body.username;
+    const user = await findUserByUsername(username);
+    if (user) {
+        // successful login
+        req.session.userId = user.id;
+        req.session.loggedIn = true;
+        res.redirect('/');
+    } else {
+        // invalid username
+        res.redirect('login?error=Invalid+username');
+    }
+}
+
+// Function to login a google user
+async function loginGoogleUser(req, res) {
     // Login a user and redirect appropriately
     const username = req.body.username;
     const user = await findUserByUsername(username);
@@ -496,11 +579,6 @@ function generateAvatar(letter, width = 100, height = 100) {
     
     // 5. Return the avatar as a PNG buffer
     return avatarCanvas.toBuffer('image/png');
-}
-
-// Function to generate a random id
-function generateRandomId() {
-    return crypto.randomUUID();
 }
 
 // Function to get current date as string
