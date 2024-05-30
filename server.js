@@ -219,8 +219,7 @@ app.post('/delete/:id', isAuthenticated, (req, res) => {
     // Delete a post if the current user is the owner
     deletePost(req, res);
 });
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile'] })
-);
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), async (req, res) => {
     const hashedGoogleId = crypto.createHash('sha256').update(req.user.id).digest('hex');
     req.session.hashedGoogleId = hashedGoogleId;
@@ -396,22 +395,6 @@ async function registerAndLoginGoogleUser(req, res) {
 
 // Function to login a user
 async function loginUser(req, res) {
-    // Login a user and redirect appropriately
-    const username = req.body.username;
-    const user = await findUserByUsername(username);
-    if (user) {
-        // successful login
-        req.session.userId = user.id;
-        req.session.loggedIn = true;
-        res.redirect('/');
-    } else {
-        // invalid username
-        res.redirect('login?error=Invalid+username');
-    }
-}
-
-// Function to login a google user
-async function loginGoogleUser(req, res) {
     // Login a user and redirect appropriately
     const username = req.body.username;
     const user = await findUserByUsername(username);

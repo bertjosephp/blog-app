@@ -169,6 +169,32 @@ header nav ul .user-info .header-avatar-img {
     border-bottom: 1px solid gray;
 }
 
+.login-register section .google-login-link {
+    margin-top: 24px;
+    padding: 8px;
+    border: 1px solid black;
+    border-radius: 25px;
+    text-decoration: none;
+    color: black;
+    transition: 200ms;
+}
+
+.login-register section .google-login-link div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+}
+
+.login-register section .google-login-link:hover {
+    transform: scale(1.05);
+}
+
+.login-register section img {
+    width: 32px;
+    height: 32px;
+}
+
 .login-register section form {
     width: 80%;
     display: flex;
@@ -565,11 +591,11 @@ footer {
         align-items: center;
     }
 
-    .login-register section {
+    /* .login-register section {
         min-width: 400px;
         padding: 40px;
         border-radius: 10px;
-    }
+    } */
 }
 
 @media screen and (max-width: 800px) {

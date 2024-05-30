@@ -4,7 +4,13 @@
 <section class="login-register">
     <section class = "login-area">
         <h2>Login</h2>
-        <!-- errors will appear here -->
+        <a href="/auth/google" class="google-login-link">
+            <div>
+                <img src="/images/google.png" alt="Google logo">
+                <span>Continue with Google</span>
+            </div>
+        </a>
+        {{!-- <!-- errors will appear here -->
         {{#if loginError}}
             <p style="color: red;">{{loginError}}</p>
         {{else}}
@@ -15,24 +21,6 @@
             <label for="login-name">Username</label>
             <input type="text" id="login-name" name="username">
             <button type="submit">Login</button>
-        </form>
-    </section>
-
-    <span>--OR--</span>
-
-    <section class = "register-area">
-        <h2>Register</h2>
-        <!-- errors will appear here -->
-        {{#if regError}}
-            <p style="color: red;">{{regError}}</p>
-        {{else}}
-            <p> </p>
-        {{/if}}
-        <form action="/register" method="POST">
-            <!-- the registration form goes here -->
-            <label for="register-name">Username</label>
-            <input type="text" id="register-name" name="username">
-            <button type="submit">Register</button>
-        </form>
+        </form> --}}
     </section>
 </section>
