@@ -378,11 +378,21 @@ header nav ul .user-info .header-avatar-img {
 }
 
 .posts-list h2 {
-    margin-bottom: 40px;
+    margin-bottom: 10px;
     padding: 0 20px 8px 20px;
     border-bottom: 1px solid gray;
     font-size: 32px;
     text-align: center;
+}
+
+.posts-list #sort-form {
+    height: 20px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
 }
 
 .posts-list ul {

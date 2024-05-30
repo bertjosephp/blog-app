@@ -23,7 +23,6 @@
                     <button type="button" class="emoji-button" onclick="toggleEmojiPanel()">😀</button>
                     <button type="submit" class="post-button">Post</button>
                 </div>
-
             </form>
         </section>
     {{/if}}
@@ -31,6 +30,16 @@
     <section class="posts-list">
         <!-- recent posts -->
         <h2>Recent {{{postNeoType}}}s</h2>
+
+        <form id="sort-form">
+            <label for="sort">Sort By:</label>
+            <select name="sort" id="sort" onchange="this.form.submit()">
+                <option value="newest" {{#if (equal sortMethod "newest")}}selected{{/if}}>Newest</option>
+                <option value="oldest" {{#if (equal sortMethod "oldest")}}selected{{/if}}>Oldest</option>
+                <option value="most-likes" {{#if (equal sortMethod "most-likes")}}selected{{/if}}>Most Likes</option>
+                 <option value="least-likes" {{#if (equal sortMethod "least-likes")}}selected{{/if}}>Least Likes</option>
+            </select>
+        </form>
 
         {{#if posts.length}}
         <ul>
@@ -49,74 +58,79 @@
 {{! JavaScript for Emoji Integration }}
 <script>
 
-/*
- You want to show a subset of the emojis. About 200. However,
- you also want the user to be able to search all emojis,
- so, put them in this array when the array is empty so 
- that you have them.
-*/
+    // Change sort method
+    document.getElementById('sort').value = '{{sortMethod}}';
 
-let allEmojis = [];  // Global list to hold all emojis
+    /*
+    You want to show a subset of the emojis. About 200. However,
+    you also want the user to be able to search all emojis,
+    so, put them in this array when the array is empty so 
+    that you have them.
+    */
 
-function toggleEmojiPanel() {
-    const container = document.getElementById('emoji-container');
-    container.style.display = container.style.display === 'none' ? 'flex' : 'none';
+    let allEmojis = [];  // Global list to hold all emojis
+
+    function toggleEmojiPanel() {
+        const container = document.getElementById('emoji-container');
+        container.style.display = container.style.display === 'none' ? 'flex' : 'none';
 
 
-    if(container.style.display === 'flex' && allEmojis.length == 0){
-        retrieveAllEmojis();
+        if(container.style.display === 'flex' && allEmojis.length == 0){
+            retrieveAllEmojis();
+        }
     }
-}
 
-function displayEmojis(emojis,limit=200) {
-    const container = document.getElementById('emoji-grid');
-    container.innerHTML = '';  // Clear previous results
-    if (Array.isArray(emojis) && emojis.length > 0) {
-        emojis.slice(0, limit).forEach(emoji => {
-            const emojiElement = document.createElement('span');
-            emojiElement.textContent = emoji.character;
-            emojiElement.title = emoji.slug;  // Showing the emoji name on hover
-            emojiElement.style.cursor = 'pointer';
-            emojiElement.style.fontSize = '18px';
-            emojiElement.onclick = () => insertEmoji(emoji.character);
-            container.appendChild(emojiElement);
-        });
-    } else {
-        container.textContent = 'No emojis found. Try a different search!';
+    function displayEmojis(emojis,limit=200) {
+        const container = document.getElementById('emoji-grid');
+        container.innerHTML = '';  // Clear previous results
+        if (Array.isArray(emojis) && emojis.length > 0) {
+            emojis.slice(0, limit).forEach(emoji => {
+                const emojiElement = document.createElement('span');
+                emojiElement.textContent = emoji.character;
+                emojiElement.title = emoji.slug;  // Showing the emoji name on hover
+                emojiElement.style.cursor = 'pointer';
+                emojiElement.style.fontSize = '18px';
+                emojiElement.onclick = () => insertEmoji(emoji.character);
+                container.appendChild(emojiElement);
+            });
+        } else {
+            container.textContent = 'No emojis found. Try a different search!';
+        }
     }
-}
 
-function searchEmojis() {
-    const searchTerm = document.getElementById('emoji-search').value.toLowerCase();
-    const filteredEmojis = allEmojis.filter(emoji => emoji.slug.includes(searchTerm));
-    console.log(filteredEmojis);
-    displayEmojis(filteredEmojis);
-}
-
-function insertEmoji(emoji) {
-    const textarea = document.getElementById('content');
-    const textBeforeCursor = textarea.value.substring(0, textarea.selectionStart);
-    const textAfterCursor  = textarea.value.substring(textarea.selectionEnd, textarea.value.length);
-
-    // insert emoji at cursor position, then move cursor
-    textarea.value = textBeforeCursor + emoji + textAfterCursor;
-    textarea.selectionStart = textarea.selectionStart + emoji.length;
-    textarea.selectionEnd = textarea.selectionStart + emoji.length;
-    textarea.focus();  // Bring focus back to the textarea
-}
-
-// Function to retrieve all emojis
-async function retrieveAllEmojis() {
-    const apiKey = "{{accessToken}}";     // insert Emoji API Key inside .env file
-    const apiUrl = 'https://emoji-api.com/emojis?access_key=' + apiKey;
-    try {
-        const res = await fetch(apiUrl);
-        const data = await res.json();
-        allEmojis = data;
-        displayEmojis(allEmojis);
-    } catch (err) {
-        console.error('Error retrieving emojis:', err);
+    function searchEmojis() {
+        const searchTerm = document.getElementById('emoji-search').value.toLowerCase();
+        const filteredEmojis = allEmojis.filter(emoji => emoji.slug.includes(searchTerm));
+        console.log(filteredEmojis);
+        displayEmojis(filteredEmojis);
     }
-}
+
+    function insertEmoji(emoji) {
+        const textarea = document.getElementById('content');
+        const textBeforeCursor = textarea.value.substring(0, textarea.selectionStart);
+        const textAfterCursor  = textarea.value.substring(textarea.selectionEnd, textarea.value.length);
+
+        // insert emoji at cursor position, then move cursor
+        textarea.value = textBeforeCursor + emoji + textAfterCursor;
+        textarea.selectionStart = textarea.selectionStart + emoji.length;
+        textarea.selectionEnd = textarea.selectionStart + emoji.length;
+        textarea.focus();  // Bring focus back to the textarea
+    }
+
+    // Function to retrieve all emojis
+    async function retrieveAllEmojis() {
+        const apiKey = "{{accessToken}}";     // insert Emoji API Key inside .env file
+        const apiUrl = 'https://emoji-api.com/emojis?access_key=' + apiKey;
+        try {
+            const res = await fetch(apiUrl);
+            const data = await res.json();
+            allEmojis = data;
+            displayEmojis(allEmojis);
+        } catch (err) {
+            console.error('Error retrieving emojis:', err);
+        }
+    }
+
+
 </script>
 

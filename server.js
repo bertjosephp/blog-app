@@ -85,6 +85,9 @@ app.engine(
                 }
                 return options.inverse(this);
             },
+            equal: function (v1, v2) {
+                return v1 === v2;
+            }
         },
     })
 );
@@ -133,8 +136,9 @@ app.use(express.json());                            // Parse JSON bodies (as sen
 app.get('/', async (req, res) => {
     const user = await getCurrentUser(req) || {};
     const userId = req.session.userId;
+    const sortMethod = req.query.sort || 'newest'   // default sort method
     try {
-        const posts = await getPosts();
+        const posts = await getSortedPosts(sortMethod);
         let likedPosts = [];
         if (userId) {
             const db = await getDBConnection();
@@ -155,9 +159,10 @@ app.get('/', async (req, res) => {
 
         if (req.session.loggedIn) {
             // include api key if user is logged in
-            res.render('home', { posts: postsWithDetails, user: user, accessToken: accessToken });
+            console.log(sortMethod);
+            res.render('home', { posts: postsWithDetails, user: user, accessToken: accessToken, sortMethod: sortMethod });
         } else {
-            res.render('home', { posts: postsWithDetails, user: user });
+            res.render('home', { posts: postsWithDetails, user: user, sortMethod: sortMethod });
         }
     } catch (error) {
         console.error('Failed to load home page:', error);
@@ -604,6 +609,35 @@ async function deletePost(req, res) {
         res.json({ success: true });
     } catch (error) {
         res.status(404).json({ success: false, message: 'Post not found' });
+    } finally {
+        await db.close();
+    }
+}
+
+// Function to get posts, sorted by specified method
+async function getSortedPosts(sortMethod) {
+    const db = await getDBConnection();
+    try {
+        let query = '';
+        switch (sortMethod) {
+            case 'newest':
+                query = 'SELECT * FROM posts ORDER BY timestamp DESC';      // sort by newest
+                break;
+            case 'oldest':
+                query = 'SELECT * FROM posts ORDER BY timestamp ASC';       // sort by oldest
+                break;
+            case 'most-likes':
+                query = 'SELECT * FROM posts ORDER BY likes DESC';          // sort by most likes
+                break;
+            case 'least-likes':
+                query = 'SELECT * FROM posts ORDER BY likes ASC';           // sort by least likes
+                break;
+            default:
+                query = 'SELECT * FROM posts ORDER BY timestamp DESC';      // default: sort by newest
+                break;
+        }
+        const rows = await db.all(query);
+        return rows;
     } finally {
         await db.close();
     }
