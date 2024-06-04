@@ -1,40 +1,46 @@
 {{! Partial for a single post }}
 <div class="post">
-    <div class="post-avatar">
-        <!-- the user's avatar -->
-        <img src="{{#if posterAvatarUrl}}
-                        {{posterAvatarUrl}}
-                    {{else}}
-                        /avatar/{{this.username}}
-                    {{/if}}" 
-                    alt="User Avatar" 
-                    class="post-avatar-img">
-    </div>
     <div class="post-content preserve-newlines">
         <!-- the post -->
-        <h3>{{this.title}}</h3>
-        <p>{{this.content}}</p>
-        <div class="post-status-bar">
-            <!-- everything that is shown in the status bar -->
-            <div class="post-button-container">
-                {{#if loggedIn}}
-                    {{#if isOwnedByUser}}
-                        {{!-- show delete button if post is owned by user --}}
-                        <button class="delete-button" data-id="{{this.id}}" onclick="handleDeleteClick(event)"><i class="fas fa-trash-alt"> </i></button>
-                    {{else}}
-                        {{!-- otherwise, show like button --}}
-                        <button class="like-button" data-id="{{this.id}}" onclick="handleLikeClick(event)"
-                                style="color: {{#if this.isLikedByUser}}white{{else}}gray{{/if}};
-                                        background-color: {{#if this.isLikedByUser}}red{{else}}white{{/if}};
-                                        border-color: {{#if this.isLikedByUser}}red{{else}}gray{{/if}}">
-                            ♥
-                        </button>
-                    {{/if}}
-                {{/if}}
-                <span class="like-count">{{this.likes}} Likes</span>
+        <div class="post-header">
+            <div class="post-avatar">
+                <!-- the user's avatar -->
+                <img src="{{#if posterAvatarUrl}}
+                                {{posterAvatarUrl}}
+                            {{else}}
+                                /avatar/{{this.username}}
+                            {{/if}}" 
+                            alt="User Avatar" 
+                            class="post-avatar-img">
             </div>
-            <span class="post-info">Posted by {{this.username}} on {{this.timestamp}}</span>
-        </div>        
+            <h3>{{this.title}}</h3>
+        </div>
+        <div class="post-body">
+            <div class="post-text-container">
+                <p>{{this.content}}</p>
+            </div>
+            <div class="post-status-bar">
+                <!-- everything that is shown in the status bar -->
+                <div class="post-button-container">
+                    {{#if loggedIn}}
+                        {{#if isOwnedByUser}}
+                            {{!-- show delete button if post is owned by user --}}
+                            <button class="delete-button" data-id="{{this.id}}" onclick="handleDeleteClick(event)"><i class="fas fa-trash-alt"> </i></button>
+                        {{else}}
+                            {{!-- otherwise, show like button --}}
+                            <button class="like-button" data-id="{{this.id}}" onclick="handleLikeClick(event)"
+                                    style="color: {{#if this.isLikedByUser}}white{{else}}gray{{/if}};
+                                            background-color: {{#if this.isLikedByUser}}red{{else}}white{{/if}};
+                                            border-color: {{#if this.isLikedByUser}}red{{else}}gray{{/if}}">
+                                ♥
+                            </button>
+                        {{/if}}
+                    {{/if}}
+                    <span class="like-count">{{this.likes}} Likes</span>
+                </div>
+                <span class="post-info">Posted by {{this.username}} on {{this.timestamp}}</span>
+            </div>     
+        </div>   
     </div>
 </div>
 <script>

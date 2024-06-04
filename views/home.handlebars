@@ -6,17 +6,22 @@
     {{#if loggedIn}}
         <!-- show the create post form when logged in -->
         <section class="post-form">
-            <h2>Compose a New {{{postNeoType}}}</h2>
             <form action="/posts" method="POST">
-                <label for="title">Title</label>
-                <input type="text" id="title" name="title">
-                <label for="content">Content</label>
-                <textarea name="content" id="content"></textarea>
-
+                <h2>Compose a New {{{postNeoType}}}</h2>
+                <div class="post-form-title-container">
+                    <label for="title">Title:</label>
+                    <input type="text" id="title" name="title">
+                </div>
+                <div class="post-form-content-container">
+                    <label for="content">Content:</label>
+                    <textarea name="content" id="content"></textarea>
+                </div>
                 <div id="emoji-container" class="emoji-panel" style="display: none;">
                     <label for="emoji-search">Search Emoji</label>
-                    <input type="text" id="emoji-search" name="emoji-search" oninput="searchEmojis()">
-                    <div id="emoji-grid"></div>
+                    <div class="emoji-search-container">     
+                        <input type="text" id="emoji-search" name="emoji-search" oninput="searchEmojis()">
+                        <div id="emoji-grid"></div>
+                    </div>
                 </div>
 
                 <div class="form-actions">

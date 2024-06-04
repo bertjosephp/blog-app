@@ -1,8 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&display=swap');
+
 :root {
-    --bird-blue: #6FB2D4;
-    --bird-white: #f0f2f5;
-    --bird-orange: #FC986A;
-    --bird-pink: #EE6D8F;
+    --dark-teal1: #2B454A;
+    --dark-teal2: #344948;
+    --pale-yellow: #F7F4CF;
+    --gunmetal-green1: #5E6764;
+    --gunmetal-green2: #838A7A;
+    --darker-teal1: #0D2E37;
+    --darker-teal2: #2A4343;
+    --light-beige: #F3E0BC;
+    --pale-teal: #B3CBC0;
+    --cool-gray: #84857E;
+    --warm-beige1: #F7E5B9;
+    --warm-beige2: #E5C197;
 }
 
 html {
@@ -17,8 +27,9 @@ body {
     margin: 0;
     display: flex;
     flex-direction: column;
-    background-color: var(--bird-white);
-    color: black;
+    background: linear-gradient(to bottom, var(--pale-teal), var(--cool-gray));
+    color: var(--dark-teal1);
+    font-family: "Bitter", sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6, p, ul, ol, li {
@@ -27,16 +38,18 @@ h1, h2, h3, h4, h5, h6, p, ul, ol, li {
 }
 
 a:hover {
-    color: var(--bird-white);
+    color: var(--warm-beige2);
 }
 
 button {
     transition: 200ms;
+    background: linear-gradient(to bottom, var(--dark-teal1), var(--dark-teal2), var(--dark-teal1));
+    color: var(--pale-yellow);
+    border: 1px solid (--dark-teal1);
 }
 
 button:hover {
     cursor: pointer;
-    background-color: var(--bird-orange);
 }
 
 input {
@@ -45,6 +58,10 @@ input {
 
 input:focus {
     outline: none;
+}
+
+textarea {
+    transition: 200ms;
 }
 
 textarea:focus {
@@ -58,8 +75,8 @@ header {
     padding: 20px 0;
     display: flex;
     justify-content: space-between;
-    background-color: var(--bird-blue);
-    color: black;
+    background: linear-gradient(to bottom, var(--dark-teal1), var(--dark-teal2), var(--dark-teal1));
+    color: var(--pale-yellow);
     border-bottom: 1px solid gray;
 }
 
@@ -70,17 +87,16 @@ header .logo {
     justify-content: flex-start;
     align-items: center;
     gap: 10px;
-    color: var(--bird-white);
 }
 
 header .logo .logo-img-container {
     height: 40px;
     width: 40px;
-    border-radius: 10px;
+    border-radius: 50%;
     overflow: hidden;
 }
 
-header .logo .logo-img-container  img {
+header .logo .logo-img-container img {
     height: 100%;
     width: 100%;
     object-fit: cover;
@@ -107,7 +123,11 @@ header nav ul li {
 
 header nav ul li a {
     text-decoration: none;
-    color: black;
+    color: var(--pale-yellow);
+}
+
+header nav ul li a:hover {
+    color: var(--warm-beige2);
 }
 
 header nav ul .user-info {
@@ -116,7 +136,7 @@ header nav ul .user-info {
     align-items: center;
     height: 40px;
     width: 40px;
-    border-radius: 10px;
+    border-radius: 50%;
     overflow: hidden;
 }
 
@@ -133,9 +153,10 @@ header nav ul .user-info .header-avatar-img {
     height: 100%;
     margin: 40px 0;
     display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: flex-start;
+    flex-direction: column;
+    /* align-items: center; */
+    /* justify-content: center;
+    align-items: flex-start; */
     gap: 20px;
 }
 
@@ -145,6 +166,7 @@ header nav ul .user-info .header-avatar-img {
     width: 100%;
     height: 100%;
     margin: 40px auto;
+    flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -153,30 +175,35 @@ header nav ul .user-info .header-avatar-img {
 
 .login-register section {
     min-width: 400px;
-    padding: 40px 40px 80px 40px;
+    padding: 80px;
+    margin: auto auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: white;
-    border: 1px solid black;
+    background: linear-gradient(to bottom, var(--warm-beige1), var(--warm-beige2));
+    border: 2px solid var(--gunmetal-green1);
     border-radius: 10px;
+    box-shadow: 1px 2px 2px 1px var(--gunmetal-green1);
+    color: var(--dark-teal1)
 }
 
 .login-register section h2 {
-    margin-bottom: 10px;
+    margin: 0 16px 40px 16px;
     padding-bottom: 8px;
     font-size: 32px;
     border-bottom: 1px solid gray;
+    text-align: center;
 }
 
 .google-login-link {
     margin-top: 24px;
     padding: 8px;
-    border: 1px solid black;
+    border: 1px solid var(--dark-teal1);
     border-radius: 25px;
     text-decoration: none;
-    color: black;
     transition: 200ms;
+    background: linear-gradient(to bottom, var(--dark-teal1), var(--dark-teal2), var(--dark-teal1));
+    color: var(--pale-yellow);
 }
 
 .google-login-link div {
@@ -188,7 +215,6 @@ header nav ul .user-info .header-avatar-img {
 
 .google-login-link:hover {
     transform: scale(1.05);
-    background-color: var(--bird-orange);
 }
 
 .google-login-link:active {
@@ -228,7 +254,6 @@ header nav ul .user-info .header-avatar-img {
 
 .login-register section form button:hover {
     transform: scale(1.05);
-    background-color: var(--bird-orange);
 }
 
 .login-register section form button:active {
@@ -250,51 +275,75 @@ header nav ul .user-info .header-avatar-img {
 /* * Post * */
 
 .post-form {
-    flex-grow: 1;
-    flex-basis: 40%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin: 0 auto 40px auto;
 }
 
 .post-form form {
-    width: 80%;
-    padding: 40px;
+    width: 100%;
+    padding: 80px 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
-    gap: 8px;
-    background-color: white;
-    border: 1px solid gray;
-    border-radius: 10px;
-    box-shadow: 1px 1px 1px 1px gray;
+    align-items: center;
+    gap: 16px;
+    background: linear-gradient(to bottom, var(--warm-beige1), var(--warm-beige2));
+    box-shadow: 1px 1px 1px 1px var(--gunmetal-green1);
+    margin-top: -40px;
+}
+
+.post-form form h2 {
+    margin: 40px auto 20px auto;
+}
+
+.post-form-title-container,
+.post-form-content-container,
+.emoji-container {
+    width: 800px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.post-form-title-container label,
+.post-form-content-container label,
+.emoji-panel label {
+    display: inline-block;
+    width: 80px;
+    margin-right: 20px;
+    text-align: right;
 }
 
 .post-form label {
+    font-weight: 600;
     font-size: 20px;
 }
 
 .post-form form input {
-    width: 95%;
+    width: 600px;
     margin-bottom: 10px;
     padding: 12px;
     align-self: center;
+    font-family: "Bitter", sans-serif;
     font-size: 18px;
-    border: 1px solid gray;
-    border-radius: 8px;
+    border: 2px solid var(--warm-beige2);
+    border-radius: 10px;
 }
 
 .post-form form textarea {
-    width: 95%;
+    width: 600px;
     min-height: 120px;
     margin-bottom: 10px;
     padding: 12px;
     align-self: center;
+    font-family: "Bitter", sans-serif;
     font-size: 18px;
-    border: 1px solid gray;
-    border-radius: 8px;
+    border: 2px solid var(--warm-beige2);
+    border-radius: 10px;
     resize: vertical;
     overflow-y: auto;
 }
@@ -318,7 +367,6 @@ header nav ul .user-info .header-avatar-img {
 
 .post-form form button:hover {
     transform: scale(1.05);
-    background-color: var(--bird-orange);
 }
 
 .post-form form button:active {
@@ -336,41 +384,26 @@ header nav ul .user-info .header-avatar-img {
 .post-form h2 {
     margin-bottom: 40px;
     padding: 0 20px 8px 20px;
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid var(--gunmetal-green1);
     font-size: 32px;
     text-align: center;
 }
 
-.post-form .emoji-panel {
+.emoji-panel {
     width: 100%;
-    margin-top: 8px;
-    padding: 8px;
     align-self: center;
-    flex-direction: column;
+    display: flex;
+    flex-direction: row;
     justify-content: center;
-    align-items: center;
-    border: 1px solid gray;
-    border-radius: 8px;
+    align-items: flex-start;
 }
 
-.post-form .emoji-panel input {
-    width: 80%;
-    margin-top: 8px;
-    margin-bottom: 10px;
-    padding: 8px;
-    font-size: 16px;
-    border: 1px solid gray;
-    border-radius: 8px;
-}
-
-.post-form .emoji-panel #emoji-grid {
-    width: 90%;
+#emoji-grid {
+    width: 628px;
     text-align: center;
 }
 
 .posts-list {
-    flex-grow: 2;
-    flex-basis: 60%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -380,14 +413,14 @@ header nav ul .user-info .header-avatar-img {
 .posts-list h2 {
     margin-bottom: 10px;
     padding: 0 20px 8px 20px;
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid var(--gunmetal-green1);
     font-size: 32px;
     text-align: center;
 }
 
-.posts-list .sort-form {
+.sort-form {
     height: 20px;
-    margin-bottom: 10px;
+    margin: 10px 0 20px 0;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -395,97 +428,128 @@ header nav ul .user-info .header-avatar-img {
     gap: 8px;
 }
 
+#sort {
+    font-family: "Bitter", sans-serif;
+    background: linear-gradient(to bottom, var(--warm-beige1), var(--warm-beige2));
+    border: 1px solid var(--gunmetal-green1);
+    border-radius: 25px;
+    color: var(--dark-teal1);
+    padding: 4px 8px;
+    text-align: center;
+}
+
 .posts-list ul {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 20px;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .post {
-    width: 80%;
+    width: 90%;
     max-width: 800px;
-    min-width: 720px;
-    padding: 20px;
-    border: 1px solid gray;
-    border-left: 8px solid var(--bird-orange);
-    border-radius: 10px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 20px;
-    background-color: white;
-    box-shadow: 1px 1px 1px 1px gray;
+    min-width: 400px;
+    margin: 0 auto;
+    border: 1px solid var(--gunmetal-green1);
+    border-radius: 25px;
+    background: linear-gradient(to bottom, var(--darker-teal2), var(--darker-teal1), var(--darker-teal2));
+    box-shadow: 1px 1px 1px 1px var(--gunmetal-green1);
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
-.post .post-avatar {
-    height: 80px;
-    width: 80px;
-    border-radius: 10px;
+.post-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.post-header {
+    padding: 20px 20px 10px 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(to bottom, var(--gunmetal-green2), var(--gunmetal-green1));
+    color: var(--pale-yellow);
+    text-shadow: 
+        -1px -1px 0 var(--gunmetal-green1),  
+         1px -1px 0 var(--gunmetal-green1),
+        -1px  1px 0 var(--gunmetal-green1),
+         1px  1px 0 var(--gunmetal-green1);
+}
+
+.post-avatar {
+    height: 40px;
+    width: 40px;
+    min-width: 40px;
+    border-radius: 50%;
     overflow: hidden;
 }
 
-.post .post-avatar .post-avatar-img {
+.post-avatar-img {
     height: 100%;
     width: 100%;
     object-fit: cover;
 }
 
-.post .post-content {
-    flex: 1;
+.post-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+    color: var(--light-beige)
 }
 
-.post .post-content > h3 {
-    padding-bottom: 12px;
-    font-size: 24px;
-}
-
-.post .post-content > p {
+.post-text-container {
     font-size: 18px;
+    padding: 20px;
 }
 
-.post .post-content .post-status-bar {
-    margin-top: 32px;
-    padding-top: 20px;
-    border-top: 1px solid gray;
+.post-status-bar {
+    margin: 0 20px;
+    padding: 20px 0;
+    border-top: 1px solid var(--gunmetal-green2);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    gap: 80px;
-    color: gray;
+    gap: 20px;
+    color: var(--gunmetal-green2);
+    text-align: center;
 }
 
-.post .post-content .post-status-bar .post-button-container {
+.post-button-container {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    gap: 40px;
+    gap: 20px;
 }
 
-.post .post-content .post-status-bar .post-button-container .like-button {
+.post-button-container .like-button {
     width: 30px;
     height: 30px;
-    border: 2px solid;
-    border-color: gray;
+    border: 1px solid;
     border-radius: 50%;
     background: none;
-    background-color: white;
-    color: gray;
     font-size: 20px;
 }
 
-.post .post-content .post-status-bar .post-button-container .delete-button {
+.post-button-container .delete-button {
     width: 30px;
     height: 30px;
     border: none;
     background: none;
-    background-color: white;
-    color: gray;
+    background-color: none;
+    color: var(--warm-beige2);
     font-size: 20px;
+}
+
+.post-info {
+    max-width: 200px;
 }
 
 .post .post-content .post-status-bar .post-button-container .like-button:hover {
@@ -508,10 +572,10 @@ header nav ul .user-info .header-avatar-img {
     justify-content: center;
     align-items: center;
     gap: 40px;
-    border: 1px solid gray;
+    border: 1px solid var(--gunmetal-green1);
     border-radius: 10px;
-    background-color: var(--bird-white);
-    box-shadow: 1px 1px 1px 1px gray;
+    background: linear-gradient(to bottom, var(--warm-beige1), var(--warm-beige2));
+    box-shadow: 1px 1px 1px 1px var(--gunmetal-green1);
 }
 
 .profile-container .profile-avatar {
@@ -530,7 +594,7 @@ header nav ul .user-info .header-avatar-img {
 .profile-container .profile-info h2 {
     font-size: 32px;
     margin-bottom: 12px;
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid var(--gunmetal-green1);
 } 
 
 .profile-container .profile-info p {
@@ -549,17 +613,7 @@ header nav ul .user-info .header-avatar-img {
     margin-bottom: 10px;
     padding: 0 20px 8px 20px;
     font-size: 32px;
-    border-bottom: 1px solid gray;
-}
-
-.user-posts .sort-form {
-    height: 20px;
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
+    border-bottom: 1px solid var(--gunmetal-green1);
 }
 
 .user-posts ul {
@@ -614,7 +668,7 @@ header nav ul .user-info .header-avatar-img {
 .logout-confirmation-container h1 {
     font-size: 48px;
     padding: 8px 32px;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid var(--dark-teal1);
     margin-bottom: 16px;
 }
 
@@ -634,18 +688,17 @@ header nav ul .user-info .header-avatar-img {
 .logout-confirmation-container .logout-links a {
     padding: 8px 16px;
     width: 200px;
-    border: 1px solid black;
+    border: 1px solid var(--dark-teal1);
     border-radius: 8px;
     font-size: 20px;
     text-decoration: none;
-    background-color: var(--bird-blue);
-    color: white;
+    background-color: var(--dark-teal1);
+    color: var(--pale-yellow);
     transition: 200ms;
 }
 
 .logout-confirmation-container .logout-links a:hover {
     transform: scale(1.05);
-    background-color: var(--bird-orange);
 }
 
 .logout-confirmation-container .logout-links a:active {
@@ -660,29 +713,20 @@ footer {
     padding: 20px 0;
     display: flex;
     justify-content: center;
-    background-color: var(--bird-blue);
-    color: black;
+    background: linear-gradient(to bottom, var(--dark-teal1), var(--dark-teal2), var(--dark-teal1));
+    color: var(--pale-yellow);
 }
 
 
 /* Media Queries */
 
 @media screen and (max-width: 1240px) {
-    .content-container {
-        flex-direction: column;
-        align-items: center;
-    }
-
     .post-form {
         margin-bottom: 40px;
     }
 
     .profile-container {
         max-width: 95%;
-    }
-
-    div#emoji-container {
-        max-width: 480px;
     }
 }
 
@@ -691,27 +735,31 @@ footer {
         flex-direction: column;
         align-items: center;
     }
-
-    /* .login-register section {
-        min-width: 400px;
-        padding: 40px;
-        border-radius: 10px;
-    } */
 }
 
 @media screen and (max-width: 800px) {
-    .post {
-        min-width: 360px;
-        gap: 12px;
-    }
-
-    .post .post-content .post-status-bar {
+    .post-status-bar {
         text-align: center;
         gap: 20px;
     }
     
-    .post .post-content .post-status-bar .post-button-container {
+    .post-button-container {
         gap: 10px;
+    }
+
+    .post-form-title-container,
+    .post-form-content-container,
+    .emoji-container {
+        width: 100%;
+    }
+
+    .post-form form input,
+    .post-form form textarea {
+        width: 400px;
+    }
+
+    #emoji-grid {
+        width: 428px;
     }
 }
 
@@ -735,5 +783,14 @@ footer {
         display: flex;
         flex-direction: column;
         align-items: center;
+    }
+
+    .post-form form input,
+    .post-form form textarea {
+        width: 260px;
+    }
+
+    #emoji-grid {
+        width: 288px;
     }
 }
