@@ -1,6 +1,10 @@
 {{! Use the main layout }}
 {{!< main }}
 
+{{#if loggedIn}}
+    <button id="back-to-top-button" onclick="togglePostFormDisplay()"><i class="fa-solid fa-pen-to-square"></i></button>
+{{/if}}
+
 {{! New Post Submission Form }}
 <section class="content-container">
     {{#if loggedIn}}
@@ -133,6 +137,17 @@
             displayEmojis(allEmojis);
         } catch (err) {
             console.error('Error retrieving emojis:', err);
+        }
+    }
+
+    // Function to toggle post form display
+    function togglePostFormDisplay() {
+        const postForm = document.querySelector('.post-form');
+        if (postForm.style.display === 'flex') {
+            postForm.style.display = 'none';
+        } else {
+            postForm.style.display = 'flex';
+            postForm.scrollIntoView({ behavior: 'smooth' });
         }
     }
 
