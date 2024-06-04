@@ -296,10 +296,6 @@ header nav ul .user-info .header-avatar-img {
     margin-top: -40px;
 }
 
-.post-form form h2 {
-    margin: 40px auto 20px auto;
-}
-
 .post-form-title-container,
 .post-form-content-container,
 .emoji-container {
@@ -355,6 +351,7 @@ header nav ul .user-info .header-avatar-img {
     justify-content: center;
     align-items: center;
     gap: 20px;
+    margin-bottom: 20px;
 }
 
 .post-form form button {
