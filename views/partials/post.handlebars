@@ -1,5 +1,5 @@
 {{! Partial for a single post }}
-<div class="post">
+<div class="post" data-id="{{this.id}}">
     <div class="post-content preserve-newlines">
         <!-- the post -->
         <div class="post-header">
@@ -146,9 +146,15 @@
         })
         .then(res => res.json())
         .then(data => {
-            // delete post element in real time
-            const postElement = buttonElement.closest('.post');
-            postElement.remove();
+            // delete post elements and associated modals in real time from the main view
+            const postElements = document.querySelectorAll(`.post[data-id='${postId}']`);
+            const modal = document.getElementById(`comments-modal-${postId}`);
+            postElements.forEach(post => {
+                post.remove();
+            });
+            if (modal) {
+                modal.style.display = 'none';
+            }
         })
         .catch(err => console.error('Error: ', err));
         
