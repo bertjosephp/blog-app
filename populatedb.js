@@ -52,7 +52,7 @@ async function initializeDB() {
         { username: 'FoodieFanatic', hashedGoogleId: 'hashedGoogleId2', avatar_url: undefined, memberSince: '2024-05-01 11:30' },
         { username: 'TechSage', hashedGoogleId: 'hashedGoogleId3', avatar_url: undefined, memberSince: '2024-05-01 12:15' },
         { username: 'EcoWarrior', hashedGoogleId: 'hashedGoogleId4', avatar_url: undefined, memberSince: '2024-05-01 13:45' },
-        { username: 'CrunchyCat', hashedGoogleId: 'hashedGoogleId5', avatar_url: 'https://creatorset.com/cdn/shop/files/Screenshot_2023-12-01_063405_1130x.png?v=1701405384', memberSince: '2024-05-01 14:45' }
+        { username: 'CrunchyCat', hashedGoogleId: 'hashedGoogleId5', avatar_url: 'uploads/5-crunchycat.png', memberSince: '2024-05-01 14:45' }
     ];
 
     const posts = [
