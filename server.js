@@ -531,7 +531,7 @@ function logoutUser(req, res) {
             console.error('Error destroying session:', err);
             res.redirect('/error');
         } else {
-            res.render('googleLogoutIframe');
+            res.render('googleLogoutIframe', { loggedIn: false });
         }
     });
 }
