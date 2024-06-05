@@ -97,6 +97,10 @@ textarea:focus {
     transform: translateY(2px);
 }
 
+.margin-40-bottom {
+    margin-bottom: 40px;
+}
+
 /* Header */
 
 header {
@@ -204,7 +208,7 @@ header nav ul .user-info .header-avatar-img {
 }
 
 .login-register section {
-    min-width: 400px;
+    min-width: 280px;
     padding: 80px;
     margin: auto auto;
     display: flex;
@@ -624,7 +628,7 @@ header nav ul .user-info .header-avatar-img {
 /* * Profile * */
 
 .profile-container {
-    max-width: 40%;
+    width: 600px;
     height: 100%;
     margin: 40px auto;
     display: flex;
@@ -672,7 +676,7 @@ header nav ul .user-info .header-avatar-img {
 
 .upload-photo-form {
     width: 100%;
-    padding: 0 20px 20px 20px;
+    padding-bottom: 20px;
 }
 
 .upload-photo-form form {
@@ -702,30 +706,6 @@ header nav ul .user-info .header-avatar-img {
     transform: translateY(4px);
 }
 
-.user-posts {
-    margin: 20px 0 40px 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.user-posts h2 {
-    margin-bottom: 10px;
-    padding: 0 20px 8px 20px;
-    font-size: 32px;
-    border-bottom: 1px solid var(--gunmetal-green1);
-}
-
-.user-posts ul {
-    width: 80%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 20px;
-}
-
 /* * Error * */
 
 .error-container {
@@ -739,6 +719,7 @@ header nav ul .user-info .header-avatar-img {
 
 .error-container h1 {
     font-size: 72px;
+    text-align: center;
 }
 
 /* * Logout iFrame * */
@@ -825,10 +806,6 @@ footer {
     .post-form {
         margin-bottom: 40px;
     }
-
-    .profile-container {
-        max-width: 95%;
-    }
 }
 
 @media screen and (max-width: 1200px) {
@@ -862,17 +839,88 @@ footer {
     #emoji-grid {
         width: 428px;
     }
+    
+    .logout-confirmation-container h1 {
+        font-size: 40px;
+        padding: 8px;
+    }
+
+    .logout-confirmation-container p {
+        font-size: 20px;
+    }
+
+    .error-container h1 {
+        font-size: 60px;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .profile-container {
+        width: 95%;
+    }
+
+    .profile-info h2 {
+        text-align: center;
+    }
+
+    .profile-info p {
+        text-align: center;
+    }
+
+    .profile-content {
+        flex-direction: column;
+    }
+
+    .logout-confirmation-container h1 {
+        font-size: 32px;
+        padding: 8px;
+    }
+
+    .logout-confirmation-container p {
+        font-size: 16px;
+    }
 }
 
 @media screen and (max-width: 580px) {
     h1 {
-        font-size: 24px;
+        font-size: 20px;
+    }
+
+    header {
+        padding: 8px 0;
+    }
+
+    header .logo {
+        margin-left: 8px;
+        gap: 4px;
+    }
+
+    header nav {
+        margin-right: 8px;
     }
 
     header nav ul {
         gap: 8px;
         text-align: center;
-        font-size: 16px;
+        font-size: 12px;
+    }
+
+    header nav ul .user-info {
+        height: 24px;
+        width: 24px;
+    }
+
+    .login-register section {
+        padding: 40px;
+    }
+
+    .login-register section img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .google-login-link span {
+        font-size: 18px;
     }
 
     .profile-container {
@@ -893,5 +941,99 @@ footer {
 
     #emoji-grid {
         width: 288px;
+    }
+
+    .posts-list-forms-container {
+        flex-direction: column;
+    }
+
+    .search-form {
+        width: 280px;
+    }
+
+    .input-photo-file,
+    .upload-photo-form form button {
+        font-size: 12px;
+    }
+
+    .error-container h1 {
+        font-size: 54px;
+    }
+}
+
+@media screen and (max-width: 420px) {
+    header nav ul {
+        gap: 8px;
+        font-size: 12px;
+    }
+
+    .login-register section {
+        padding: 40px 10px;
+    }
+
+    .google-login-link div {
+        gap: 12px;
+    }
+
+    .login-register section img {
+        width: 14px;
+        height: 14px;
+    }
+
+    .google-login-link span {
+        font-size: 14px;
+    }
+
+    .posts-list ul {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 10px;
+    }
+
+    .post {
+        width: 100%;
+        min-width: 200px;
+        border-radius: 0;
+    }
+
+    .post-header {
+        padding: 10px;
+    }
+
+    .post-text-container {
+        padding: 20px 10px;
+    }
+
+    .post-status-bar {
+        margin: 0 10px;
+        font-size: 12px;
+        gap: 10;
+    }
+
+    .post h3 {
+        font-size: 18px;
+    }
+
+    .post p {
+        font-size: 12px;
+    }
+
+    .logout-confirmation-container h1 {
+        font-size: 28px;
+        padding: 8px 0;
+    }
+
+    .logout-confirmation-container p {
+        font-size: 16px;
+    }
+
+    .error-container h1 {
+        font-size: 40px;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    header nav ul {
+        gap: 8px;
+        font-size: 9px;
     }
 }
