@@ -505,7 +505,7 @@ header nav ul .user-info .header-avatar-img {
 
 .posts-list ul {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
     gap: 20px;
     width: 100%;
     margin: 0 auto;
