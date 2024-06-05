@@ -38,13 +38,51 @@
                     {{/if}}
                     <span class="like-count">{{this.likes}} Likes</span>
                 </div>
+                <button class="comments-button" onclick="showCommentsModal({{this.id}})"><i class="fa-solid fa-comments"></i></button>
                 <span class="post-info">Posted by {{this.username}} on {{this.timestamp}}</span>
             </div>     
         </div>   
     </div>
 </div>
-<script>
 
+{{! Comments modal for the single post (initially hidden) }}
+<div id="comments-modal-{{this.id}}" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="post-header">
+            <div class="post-avatar">
+                <img src="{{#if posterAvatarUrl}}
+                                {{posterAvatarUrl}}
+                            {{else}}
+                                /avatar/{{this.username}}
+                            {{/if}}" 
+                            alt="User Avatar" 
+                            class="post-avatar-img">
+            </div>
+            <h3>{{this.title}}</h3>
+            <span class="close" onclick="closeCommentsModal({{this.id}})">&times;</span>
+        </div>
+        <div class="post-body" id="modal-post-body">
+            <div class="post-text-container">
+                <p>{{this.content}}</p>
+            </div>
+        </div>
+        <div class="modal-body">
+            {{!-- comment form --}}
+            <form action="/comments" method="POST" class="comment-form">
+                <input type="hidden" name="postId" value="{{this.id}}">
+                <textarea name="commentContent" placeholder="Write a comment..." required></textarea>
+                <button type="submit" class="submit-comment-button">Submit</button>
+            </form>
+            {{!-- post comments --}}
+            <ul id="comments-list-{{this.id}}" class="comments-list">
+                {{!-- Comments will be loaded here dynamically --}}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Function to update post likes
     function handleLikeClick(event) {
         const postId = event.target.getAttribute('data-id');
 
@@ -69,6 +107,7 @@
         .catch(err => console.error('Error: ', err));
     }
 
+    // Function to delete post
     function handleDeleteClick(event) {
         const buttonElement = event.target.closest('.delete-button');
         const postId = buttonElement.getAttribute('data-id');        
@@ -87,5 +126,54 @@
         })
         .catch(err => console.error('Error: ', err));
         
+    }
+
+    // Function to show post comments modal
+    async function showCommentsModal(postId) {
+        const modal = document.getElementById(`comments-modal-${postId}`);
+        modal.style.display = 'block';
+        await fetchComments(postId);
+    }
+
+    // Function to hide post comments modal
+    function closeCommentsModal(postId) {
+        const modal = document.getElementById(`comments-modal-${postId}`);
+        modal.style.display = 'none';
+    }
+
+    // Function to retrieve post comments
+    async function fetchComments(postId) {
+        try {
+            const res = await fetch(`/comments/${postId}`);
+            const data = await res.json();
+            const commentsList = document.getElementById(`comments-list-${postId}`);
+            commentsList.innerHTML = '';
+
+            data.comments.forEach(comment => {
+                console.log(comment);
+                const commentElement = document.createElement('li');
+                commentElement.className = 'comment-item';
+
+                // create image for commenter avatar
+                const commentImage = document.createElement('img');
+                commentImage.src = comment.commenterAvatarUrl || `/avatar/${comment.username}`;
+                commentImage.alt = 'Commenter Avatar';
+                commentImage.className = 'commenter-avatar';
+
+                // create span for comment content
+                const commentText = document.createElement('span');
+                commentElement.textContent = comment.content;
+
+                // append comment image and text to comment element
+                commentElement.appendChild(commentImage);
+                commentElement.appendChild(commentText);
+
+                // append comment element to comments list
+                commentsList.appendChild(commentElement);
+            });
+
+        } catch (err) {
+            console.error('Error fetching comments:', err);
+        }
     }
 </script>

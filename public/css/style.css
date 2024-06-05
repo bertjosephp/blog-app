@@ -208,8 +208,8 @@ header nav ul .user-info .header-avatar-img {
 }
 
 .login-register section {
-    min-width: 280px;
-    padding: 80px;
+    min-width: 300px;
+    padding: 80px 40px;
     margin: auto auto;
     display: flex;
     flex-direction: column;
@@ -231,7 +231,7 @@ header nav ul .user-info .header-avatar-img {
 
 .google-login-link {
     margin-top: 24px;
-    padding: 8px;
+    padding: 8px 24px;
     border: 1px solid var(--dark-teal1);
     border-radius: 25px;
     text-decoration: none;
@@ -295,7 +295,7 @@ header nav ul .user-info .header-avatar-img {
 }
 
 .login-register span {
-    font-size: 24px;
+    font-size: 20px;
 }
 
 .login-register p {
@@ -575,7 +575,7 @@ header nav ul .user-info .header-avatar-img {
 
 .post-status-bar {
     margin: 0 20px;
-    padding: 20px 0;
+    padding: 8px 0;
     border-top: 1px solid var(--gunmetal-green2);
     display: flex;
     flex-direction: row;
@@ -613,16 +613,138 @@ header nav ul .user-info .header-avatar-img {
     font-size: 20px;
 }
 
+.post-status-bar .comments-button {
+    width: 48px;
+    height: 48px;
+    border: none;
+    background: none;
+    background-color: none;
+    color: var(--pale-yellow);
+    font-size: 20px;
+}
+
 .post-info {
     max-width: 200px;
 }
 
-.post .post-content .post-status-bar .post-button-container .like-button:hover {
+.like-button:hover,
+.delete-button:hover,
+.comments-button:hover {
     transform: scale(1.2);
 }
 
-.post .post-content .post-status-bar .post-button-container .delete-button:hover {
-    transform: scale(1.2);
+.modal {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    max-width: 500px;
+    width: 100%;
+    margin: 100px auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background: linear-gradient(to bottom, var(--darker-teal2), var(--darker-teal1), var(--darker-teal2));
+    border-radius: 25px;
+    border: 1px solid var(--gunmetal-green1);
+    overflow: hidden;
+}
+
+#modal-post-body {
+    flex-grow: 0;
+}
+
+.modal-body .comments-list {
+    gap: 0;
+}
+
+.modal-content .modal-body {
+    margin: 0 20px;
+    padding: 20px 0 40px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+.comment-form {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.comment-form textarea {
+    flex-grow: 1;
+    width: 360px;
+    min-height: 80px;
+    padding: 12px;
+    font-size: 12px;
+    border: 2px solid var(--gunmetal-green1);
+    border-radius: 10px;
+}
+
+.submit-comment-button {
+    font-family: "Bitter", sans-serif;
+    font-size: 10px;
+    overflow-y: auto;
+    padding: 8px;
+    background: linear-gradient(to bottom, var(--warm-beige1), var(--warm-beige2));
+    color: var(--dark-teal1);
+    border: 1px solid var(--gunmetal-green1);
+    border-radius: 8px;
+}
+
+.comments-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.comment-item {
+    width: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 20px 0;
+    border-top: 1px solid var(--gunmetal-green1);
+    color: var(--warm-beige2);
+    gap: 10px;
+}
+
+.comment-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    margin-left: auto;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 /* * Profile * */

@@ -268,6 +268,19 @@ app.post('/uploadProfileImage', upload.single('profileImage'), async (req, res) 
     await uploadProfileImage(req, res);
     await renderProfile(req, res);
 });
+app.post('/comments', isAuthenticated, async (req, res) => {
+    // Add new comment on a post
+    const user = await getCurrentUser(req);
+    const { postId, commentContent } = req.body;
+    await addComment(postId, commentContent, user);
+    res.redirect('/');
+});
+app.get('/comments/:id', async (req, res) => {
+    // Get comments on a post
+    const postId = req.params.id;
+    commentsWithUrls = await getPostComments(postId);
+    res.json({ comments: commentsWithUrls });
+})
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Server Activation
@@ -692,4 +705,31 @@ async function uploadProfileImage(req, res) {
     const filePath = `/uploads/${req.file.filename}`;
     const db = await getDBConnection();
     await db.run('UPDATE users SET avatar_url = ? WHERE id = ?', [filePath, userId]);
+}
+
+// Function to add a new comment
+async function addComment(postId, commentContent, user) {
+    const timestamp = getDate();
+    const db = await getDBConnection();
+    await db.run(
+        'INSERT INTO comments (post_id, username, content, timestamp) VALUES (?, ?, ?, ?)',
+        [postId, user.username, commentContent, timestamp]
+    );
+}
+
+// Function to get comments on a post
+async function getPostComments(postId) {
+    const db = await getDBConnection();
+    const comments = await db.all('SELECT * FROM comments WHERE post_id = ? ORDER BY timestamp DESC', postId);
+
+    const commentsWithUrls = await Promise.all(
+        comments.map(async comment => {
+            const commenterUsername = comment.username;
+            const db = await getDBConnection();
+            const commenterUser = await db.get('SELECT * FROM users WHERE username = ?', commenterUsername);
+            const commenterAvatarUrl = commenterUser.avatar_url;
+            return {...comment, commenterAvatarUrl};
+        })
+    )
+    return commentsWithUrls;
 }
