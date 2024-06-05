@@ -36,7 +36,7 @@
                             </button>
                         {{/if}}
                     {{/if}}
-                    <span class="like-count">{{this.likes}} Likes</span>
+                    <span class="like-count" data-id="{{this.id}}">{{this.likes}} Likes</span>
                 </div>
                 <button class="comments-button" onclick="showCommentsModal({{this.id}})"><i class="fa-solid fa-comments"></i></button>
                 <span class="post-info">Posted by {{this.username}} on {{this.timestamp}}</span>
@@ -65,6 +65,28 @@
             <div class="post-text-container">
                 <p>{{this.content}}</p>
             </div>
+            <div class="post-status-bar">
+                <!-- everything that is shown in the status bar -->
+                <div class="post-button-container">
+                    {{#if loggedIn}}
+                        {{#if isOwnedByUser}}
+                            {{!-- show delete button if post is owned by user --}}
+                            <button class="delete-button" data-id="{{this.id}}" onclick="handleDeleteClick(event)"><i class="fas fa-trash-alt"> </i></button>
+                        {{else}}
+                            {{!-- otherwise, show like button --}}
+                            <button class="like-button" data-id="{{this.id}}" onclick="handleLikeClick(event)"
+                                    style="color: {{#if this.isLikedByUser}}white{{else}}gray{{/if}};
+                                            background-color: {{#if this.isLikedByUser}}red{{else}}white{{/if}};
+                                            border-color: {{#if this.isLikedByUser}}red{{else}}gray{{/if}}">
+                                ♥
+                            </button>
+                        {{/if}}
+                    {{/if}}
+                    <span class="like-count" data-id="{{this.id}}">{{this.likes}} Likes</span>
+                </div>
+                <button class="comments-button" onclick="showCommentsModal({{this.id}})"><i class="fa-solid fa-comments"></i></button>
+                <span class="post-info">Posted by {{this.username}} on {{this.timestamp}}</span>
+            </div> 
         </div>
         <div class="modal-body">
             {{!-- comment form --}}
@@ -94,15 +116,19 @@
         })
         .then(res => res.json())
         .then(data => {
-            // toggle like button
-            const likeButton = event.target;
-            likeButton.style.color = data.isLiked ? 'white' : 'gray';
-            likeButton.style.backgroundColor = data.isLiked ? 'red' : 'white';
-            likeButton.style.borderColor = data.isLiked ? 'red' : 'gray';
+            // toggle like buttons and update like counts related to post
+            const likeButtons = document.querySelectorAll(`.like-button[data-id='${postId}']`);
+            const likeCounts = document.querySelectorAll(`.like-count[data-id='${postId}']`);
+            likeButtons.forEach(likeButton => {
+                likeButton.style.color = data.isLiked ? 'white' : 'gray';
+                likeButton.style.backgroundColor = data.isLiked ? 'red' : 'white';
+                likeButton.style.borderColor = data.isLiked ? 'red' : 'gray';
+            });
+            likeCounts.forEach(likeCount => {
+                likeCount.textContent = `${data.likes} Likes`;
+            });
 
-            // update likes in real time
-            const likeCountElement = event.target.parentElement.querySelector('.like-count');
-            likeCountElement.textContent = `${data.likes} Likes`;
+            
         })
         .catch(err => console.error('Error: ', err));
     }
