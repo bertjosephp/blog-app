@@ -20,11 +20,13 @@ html {
     min-height: 100vh;
     width: 100%;
     scroll-behavior: smooth;
+    overflow-x: hidden;
 }
 
 body {
     min-height: 100vh;
     width: 100%;
+    height: 100%;
     margin: 0;
     display: flex;
     flex-direction: column;
@@ -591,9 +593,8 @@ header nav ul .user-info .header-avatar-img {
     max-width: 40%;
     height: 100%;
     margin: 40px auto;
-    padding: 40px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 40px;
@@ -603,28 +604,69 @@ header nav ul .user-info .header-avatar-img {
     box-shadow: 1px 1px 1px 1px var(--gunmetal-green1);
 }
 
-.profile-container .profile-avatar {
+.profile-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 40px 0 40px;
+    gap: 40px;
+}
+
+.profile-avatar {
     height: 160px;
     width: 160px;
     border-radius: 10px;
+    border: 2px solid var(--darker-teal1);
     overflow: hidden;
 }
 
-.profile-container .profile-avatar .profile-avatar-img {
+.profile-avatar .profile-avatar-img {
     height: 100%;
     width: 100%;
     object-fit: cover;
 }
 
-.profile-container .profile-info h2 {
+.profile-info h2 {
     font-size: 32px;
     margin-bottom: 12px;
     border-bottom: 1px solid var(--gunmetal-green1);
 } 
 
-.profile-container .profile-info p {
+.profile-info p {
     font-size: 20px;
 } 
+
+.upload-photo-form {
+    width: 100%;
+    padding: 0 20px 20px 20px;
+}
+
+.upload-photo-form form {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 20px;
+}
+
+.input-photo-file {
+    font-size: 16px;
+    font-family: "Bitter", sans-serif;
+}
+
+.upload-photo-form form button {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 8px;
+} 
+
+.upload-photo-form form button:hover {
+    transform: scale(1.05);
+}
+
+.upload-photo-form form button:active {
+    transform: translateY(4px);
+}
 
 .user-posts {
     margin: 20px 0 40px 0;

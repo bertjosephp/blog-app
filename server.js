@@ -10,6 +10,7 @@ const crypto = require('crypto');
 const dotenv = require('dotenv');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const multer = require('multer');
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Configuration and Setup
@@ -44,6 +45,18 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((obj, done) => {
     done(null, obj);
 });
+
+// Set up disk storage
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, './public/uploads');
+    },
+    filename: function(req, file, cb) {
+        cb(null, `${req.session.userId}-${file.originalname}`);
+    }
+});
+
+const upload = multer({ storage: storage });
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -242,7 +255,12 @@ app.post('/registerUsername', async (req, res) => {
 });
 app.get('/googleLogout', (req, res) => {
     res.render('googleLogout');
-})
+});
+app.post('/uploadProfileImage', upload.single('profileImage'), async (req, res) => {
+    // Upload and update profile image
+    await uploadProfileImage(req, res);
+    await renderProfile(req, res);
+});
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Server Activation
@@ -597,4 +615,12 @@ async function saveAvatar(buffer, username) {
     const avatarPath = path.join(__dirname, 'public', 'avatar', `${username}.png`);
     await fs.writeFile(avatarPath, buffer);
     return `/avatar/${username}.png`;
+}
+
+// Function to upload profile image
+async function uploadProfileImage(req, res) {
+    const userId = req.session.userId;
+    const filePath = `/uploads/${req.file.filename}`;
+    const db = await getDBConnection();
+    await db.run('UPDATE users SET avatar_url = ? WHERE id = ?', [filePath, userId]);
 }
