@@ -104,6 +104,7 @@ header {
     padding: 20px 0;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     background: linear-gradient(to bottom, var(--dark-teal1), var(--dark-teal2), var(--dark-teal1));
     color: var(--pale-yellow);
     border-bottom: 1px solid gray;
@@ -445,9 +446,41 @@ header nav ul .user-info .header-avatar-img {
     text-align: center;
 }
 
+.posts-list-forms-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin: 8px 0 32px 0;
+}
+
+.search-form {
+    width: 360px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.search-form input {
+    border: none;
+    border-radius: 25px;
+    padding: 8px 36px 8px 16px;
+    width: 100%;
+    background-color: #e2e8f0;
+    color: var(--dark-teal1);
+    border: 1px solid var(--gunmetal-green1);
+    font-family: "Bitter", sans-serif;
+    font-size: 16px;
+}
+
+.search-form i {
+    position: relative;
+    left: -30px;
+}
+
 .sort-form {
     height: 20px;
-    margin: 10px 0 20px 0;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -457,11 +490,12 @@ header nav ul .user-info .header-avatar-img {
 
 #sort {
     font-family: "Bitter", sans-serif;
+    font-size: 16px;
     background: linear-gradient(to bottom, var(--warm-beige1), var(--warm-beige2));
     border: 1px solid var(--gunmetal-green1);
     border-radius: 25px;
     color: var(--dark-teal1);
-    padding: 4px 8px;
+    padding: 8px 16px;
     text-align: center;
 }
 

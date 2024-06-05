@@ -150,9 +150,16 @@ app.use(express.json());                            // Parse JSON bodies (as sen
 app.get('/', async (req, res) => {
     const user = await getCurrentUser(req) || {};
     const userId = req.session.userId;
+    const searchQuery = req.query.search;           // search keyword
     const sortMethod = req.query.sort || 'newest'   // default sort method
     try {
-        const posts = await getSortedPosts(sortMethod);
+        let posts;
+        if (searchQuery) {
+            posts = await getSortedPostsBySearch(searchQuery, sortMethod);
+        } else {
+            posts = await getSortedPosts(sortMethod);
+        }
+
         let likedPosts = [];
         if (userId) {
             const db = await getDBConnection();
@@ -344,7 +351,7 @@ async function getSortedPosts(sortMethod) {
     return rows;
 }
 
-// Function to get posts, sorted by specified method
+// Function to get posts for current user, sorted by specified method
 async function getSortedPostsForUser(sortMethod, username) {
     const db = await getDBConnection();
     let query = '';
@@ -366,6 +373,62 @@ async function getSortedPostsForUser(sortMethod, username) {
             break;
     }
     const rows = await db.all(query, [username]);
+    return rows;
+}
+
+// Function to get posts by search, sorted by specified method
+async function getSortedPostsBySearch(searchQuery, sortMethod) {
+    const db = await getDBConnection();
+    let orderQuery = '';
+    switch (sortMethod) {
+        case 'newest':
+            orderQuery = 'ORDER BY timestamp DESC';     // sort by newest
+            break;
+        case 'oldest':
+            orderQuery = 'ORDER BY timestamp ASC';      // sort by oldest
+            break;
+        case 'most-likes':
+            orderQuery = 'ORDER BY likes DESC';         // sort by most likes
+            break;
+        case 'least-likes':
+            orderQuery = 'ORDER BY likes ASC';          // sort by least likes
+            break;
+        default:
+            orderQuery = 'ORDER BY timestamp DESC';     // default: sort by newest
+            break;
+    }
+    const rows = await db.all(
+        `SELECT * FROM posts WHERE title LIKE ? OR content LIKE ? ${orderQuery}`, 
+        [`%${searchQuery}%`, `%${searchQuery}%`]
+    );
+    return rows;
+}
+
+// Function to get posts for current user, sorted by specified method
+async function getSortedPostsBySearchForUser(searchQuery, sortMethod, username) {
+    const db = await getDBConnection();
+    let orderQuery = '';
+    switch (sortMethod) {
+        case 'newest':
+            orderQuery = 'ORDER BY timestamp DESC';     // sort by newest
+            break;
+        case 'oldest':
+            orderQuery = 'ORDER BY timestamp ASC';      // sort by oldest
+            break;
+        case 'most-likes':
+            orderQuery = 'ORDER BY likes DESC';         // sort by most likes
+            break;
+        case 'least-likes':
+            orderQuery = 'ORDER BY likes ASC';          // sort by least likes
+            break;
+        default:
+            orderQuery = 'ORDER BY timestamp DESC';     // default: sort by newest
+            break;
+    }
+    const rows = await db.all(
+        `SELECT * FROM posts WHERE (title LIKE ? OR content LIKE ?) AND username = ? ${orderQuery}`, 
+        [`%${searchQuery}%`, `%${searchQuery}%`, username]
+    );
     return rows;
 }
 
@@ -420,11 +483,17 @@ async function renderProfile(req, res) {
     // Fetch user posts and render the profile page
     const user = await getCurrentUser(req);
     const userId = req.session.userId;
+    const searchQuery = req.query.search;           // search keyword
     const sortMethod = req.query.sort || 'newest'   // default sort method
     const db = await getDBConnection();
     let postsWithDetails = [];
     
-    const posts = await getSortedPostsForUser(sortMethod, user.username);
+    let posts;
+        if (searchQuery) {
+            posts = await getSortedPostsBySearchForUser(searchQuery, sortMethod, user.username);
+        } else {
+            posts = await getSortedPostsForUser(sortMethod, user.username);
+        }
     const rows = await db.all('SELECT post_id FROM user_likes WHERE user_id = ?', userId);
     const likedPosts = rows.map(row => row.post_id);
 

@@ -33,15 +33,25 @@
 <section class="user-posts">
     <h2>Your {{{postNeoType}}}s</h2>
 
-    <form class="sort-form">
-        <label for="sort">Sort By:</label>
-        <select name="sort" id="sort" onchange="this.form.submit()">
-            <option value="newest" {{#if (equal sortMethod "newest")}}selected{{/if}}>Newest</option>
-            <option value="oldest" {{#if (equal sortMethod "oldest")}}selected{{/if}}>Oldest</option>
-            <option value="most-likes" {{#if (equal sortMethod "most-likes")}}selected{{/if}}>Most Likes</option>
+    <div class="posts-list-forms-container">
+        {{#if loggedIn}}
+            <form class="search-form" action="/profile" method="GET">
+                <input type="text" name="search" placeholder="Search Chirps" aria-label="Search posts">
+                <input type="hidden" name="sort" id="hidden-sort-value" value="{{sortMethod}}">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </form>
+        {{/if}}
+        
+        <form class="sort-form">
+            <label for="sort">Sort By:</label>
+            <select name="sort" id="sort" onchange="this.form.submit()">
+                <option value="newest" {{#if (equal sortMethod "newest")}}selected{{/if}}>Newest</option>
+                <option value="oldest" {{#if (equal sortMethod "oldest")}}selected{{/if}}>Oldest</option>
+                <option value="most-likes" {{#if (equal sortMethod "most-likes")}}selected{{/if}}>Most Likes</option>
                 <option value="least-likes" {{#if (equal sortMethod "least-likes")}}selected{{/if}}>Least Likes</option>
-        </select>
-    </form>
+            </select>
+        </form>
+    </div>
     
     {{#if posts.length}}
         <ul>
@@ -59,4 +69,10 @@
 <script>
     // Change sort method
     document.getElementById('sort').value = '{{sortMethod}}';
+
+    // Add event listener to submit sortMethod on change
+    document.getElementById('sort').addEventListener('change', () => {
+        document.getElementById('hidden-sort-value').value = this.value;
+        this.form.submit();
+    })
 </script>
